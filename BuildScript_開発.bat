@@ -1,12 +1,15 @@
 rem @ECHO OFF
-TITLE BuildScript_é–‹ç™º
+TITLE BuildScript_ŠJ”­
 
-REM //å¤‰æ›´å±¥æ­´
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) ãƒ•ã‚¡ã‚¤ãƒ«åå¤‰æ›´ã€
-REM                           æœ¬ç•ªç”¨ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«åˆã‚ã›ã¦Configé¡žã®ã‚³ãƒ”ãƒ¼å‡¦ç†ã‚’è¿½åŠ ã€
-REM                           ãƒªãƒªãƒ¼ã‚¹ãƒ•ãƒ©ã‚°å‡¦ç†ã‚’å‰Šé™¤
+REM //•ÏX—š—ð
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) ƒtƒ@ƒCƒ‹–¼•ÏXA
+REM                           –{”Ô—pƒrƒ‹ƒhƒXƒNƒŠƒvƒg‚É‡‚í‚¹‚ÄConfig—Þ‚ÌƒRƒs[ˆ—‚ð’Ç‰ÁA
+REM                           ƒŠƒŠ[ƒXƒtƒ‰ƒOˆ—‚ðíœ
+rem 2019/02/22 A00921ƒrƒ‹ƒhŽ©“®‰»‘Î‰ž
+rem                           %1:ƒrƒ‹ƒhVerNo(Œ`Ž®FYYMMDD_XXXXXX)
+rem                           %2:ƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬No(Œ`Ž®F)
 
-REM //å¤‰æ•°è¨­å®š
+REM //•Ï”Ý’è
 SET LOGFILE=%~n0.log
 SET SOLUTION_DIR=C:\SOLUTION
 SET BUILD_NO=Nothing
@@ -16,15 +19,15 @@ SET Temp_InstallImage=C:\InstallImage
 SET SOURCE_BACKUP=C:\BuildSource
 SET LOG_DIR=C:\BuildLog
 SET TOTAL_ERRFLG=0
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) CHG Start
-REM SET Conf_Dir=\\h031s459\Release\é–‹ç™ºç”¨config
-SET Conf_Dir=\\h031s3274\Release\é–‹ç™ºç”¨config
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) CHG End
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) CHG Start
+REM SET Conf_Dir=\\h031s459\Release\ŠJ”­—pconfig
+SET Conf_Dir=\\h031s3274\Release\ŠJ”­—pconfig
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) CHG End
 
-REM //ãƒ“ãƒ«ãƒ‰VerNo.å…¥åŠ›
+REM //ƒrƒ‹ƒhVerNo.“ü—Í
 @ECHO *********************************
-@ECHO ãƒ“ãƒ«ãƒ‰VerNo.ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„
-@ECHO å½¢å¼ï¼šYYMMDD_XXXXXX 
+@ECHO ƒrƒ‹ƒhVerNo.‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO Œ`Ž®FYYMMDD_XXXXXX 
 @ECHO *********************************
 :VerInput_Return
 rem 2019/02/22 CHK Start
@@ -32,166 +35,242 @@ rem SET /P  APPVERSION=No:
 set APPVERSION=%1
 rem 2019/02/22 CHK End
 echo %APPVERSION%
-pause
-REM //ãƒ“ãƒ«ãƒ‰VerNo.ãƒã‚§ãƒƒã‚¯
+echo %~dp0
+REM //ƒrƒ‹ƒhVerNo.ƒ`ƒFƒbƒN
 rem 2019/02/22 CHK Start
 rem IF %APPVERSION%==Nothing (
-rem @ECHO ãƒ“ãƒ«ãƒ‰VerNo.ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã¾ã›ã‚“
+rem @ECHO ƒrƒ‹ƒhVerNo.‚ª“ü—Í‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ
 rem pause
 rem GOTO VerInput_Return
 rem )
 IF "%APPVERSION%"=="" (
-@ECHO ãƒ“ãƒ«ãƒ‰VerNo.ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã¾ã›ã‚“
-EXIT 1
+	@ECHO %date% %time% ƒrƒ‹ƒhVerNo.‚ª“ü—Í‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ >> %LOG_DIR%\%LOGFILE%
+	EXIT /b 1
 )
 rem 2019/02/22 CHK End
-pause
+
 CALL :PROC_APPVERSION_CHECK %Temp_InstallImage%\%APPVERSION%
 CALL :PROC_APPVERSION_CHECK %RTB_InstallImage%\%APPVERSION%_RTB
 CALL :PROC_APPVERSION_CHECK %SOURCE_BACKUP%\%APPVERSION%
 CALL :PROC_APPVERSION_CHECK %LOG_DIR%\%APPVERSION%
 
-REM //ãƒ“ãƒ«ãƒ‰ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³æ§‹æˆã®é¸æŠž
+REM //ƒrƒ‹ƒhƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬‚Ì‘I‘ð
 CLS
-@ECHO **********************************************
-@ECHO å¯¾è±¡ã®ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³æ§‹æˆNo.ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„
-@ECHO **********************************************
-TYPE %~dp0Sub_Module\Const_Sln.ini
-@ECHO .
-:ConstSln_Return
-SET /P BUILD_NO=Noï¼š
-IF %BUILD_NO%==Nothing @ECHO NoãŒå…¥åŠ›ã•ã‚Œã¦ã„ã¾ã›ã‚“ & GOTO ConstSln_Return
-REM ///iniãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ã«ä¼´ã„skipè¡Œæ•°ã®å¤‰æ›´ -----2009/06/24 å¤‰æ›´_Start-----
+pause
+rem 2019/02/22 DEL Start
+rem @ECHO **********************************************
+rem @ECHO ‘ÎÛ‚Ìƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬No.‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢
+rem @ECHO **********************************************
+rem TYPE %~dp0Sub_Module\Const_Sln.ini
+rem @ECHO .
+rem :ConstSln_Return
+rem SET /P BUILD_NO=NoF
+rem 2019/02/22 DEL End
+rem 2019/02/22 CHG Start
+rem IF %BUILD_NO%==Nothing @ECHO No‚ª“ü—Í‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ & GOTO ConstSln_Return
+set BUILD_NO=%2
+if "%BUILD_NO%"=="" (
+	@ECHO %date% %time%  ƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬No.‚ª“ü—Í‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ >> %LOG_DIR%\%LOGFILE%
+	EXIT /b 1
+)
+pause
+rem 2019/02/22 CHG End
+REM ///iniƒtƒ@ƒCƒ‹•ÏX‚É”º‚¢skips”‚Ì•ÏX -----2009/06/24 •ÏX_Start-----
 FOR /F "eol=; skip=4 tokens=1-2 delims=," %%i in (%~dp0Sub_Module\Const_Sln.ini) do IF %BUILD_NO%==%%i (
-REM ///iniãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ã«ä¼´ã„skipè¡Œæ•°ã®å¤‰æ›´ -----2009/06/24 å¤‰æ›´_End-----
+REM ///iniƒtƒ@ƒCƒ‹•ÏX‚É”º‚¢skips”‚Ì•ÏX -----2009/06/24 •ÏX_End-----
         SET BUILDMODE=%%j
 )
 IF %BUILDMODE%==Nothing (
-@ECHO ---- ï¼©ï¼®ï¼°ï¼µï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³æ§‹æˆNo.ãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“
-@ECHO ----------------------------------------
+rem 2019/02/22 CHG Sart
+rem @ECHO ---- ‚h‚m‚o‚t‚s ‚d‚q‚q‚n‚q IIII ----
+rem @ECHO ƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬No.‚ª³‚µ‚­‚ ‚è‚Ü‚¹‚ñ
+rem @ECHO ----------------------------------------
+rem 2019/02/22 CHG End
+@ECHO ---- ‚h‚m‚o‚t‚s ‚d‚q‚q‚n‚q IIII ---- >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬No.‚ª³‚µ‚­‚ ‚è‚Ü‚¹‚ñ >> %LOG_DIR%\%LOGFILE%
+@ECHO ---------------------------------------- >> %LOG_DIR%\%LOGFILE%
 SET BUILD_NO=Nothing
-GOTO ConstSln_Return
+rem 2019/02/22 CHG Start
+rem GOTO ConstSln_Return
+rem EXIT 1
+EXIT /b 1
+rem 2019/02/22 CHG End
 )
 
-REM //å¤‰æ•°è¨­å®šãã®ï¼’
+REM //•Ï”Ý’è‚»‚Ì‚Q
 SET RTB_InstallImage=%Temp_InstallImage%\%APPVERSION%_RTB
 SET Temp_InstallImage=%Temp_InstallImage%\%APPVERSION%_TEMP
 SET SOURCE_BACKUP=%SOURCE_BACKUP%\%APPVERSION%
 SET LOG_DIR=%LOG_DIR%\%APPVERSION%
 
-REM //ãƒ“ãƒ«ãƒ‰å‡¦ç†é–‹å§‹è¡¨ç¤º
+REM //ƒrƒ‹ƒhˆ—ŠJŽn•\Ž¦
 CLS
 IF NOT EXIST %LOG_DIR% MKDIR %LOG_DIR%
 @ECHO ************************************************************************** >> %LOG_DIR%\%LOGFILE%
 @ECHO **************************************************************************
-@ECHO  //ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‡¦ç†é–‹å§‹ // >> %LOG_DIR%\%LOGFILE%
-@ECHO  //ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‡¦ç†é–‹å§‹ //
-REM //é–‹å§‹æ™‚åˆ»è¡¨ç¤º
+@ECHO  //ƒrƒ‹ƒhƒXƒNƒŠƒvƒgˆ—ŠJŽn // >> %LOG_DIR%\%LOGFILE%
+@ECHO  //ƒrƒ‹ƒhƒXƒNƒŠƒvƒgˆ—ŠJŽn //
+REM //ŠJŽnŽž•\Ž¦
 @ECHO %date% >> %LOG_DIR%\%LOGFILE%
 @ECHO %time% >> %LOG_DIR%\%LOGFILE%
 @ECHO %date% 
 @ECHO %time%
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO ãƒ“ãƒ«ãƒ‰VerNo.ã€€ã€€ã€€ï¼š%APPVERSION% >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ“ãƒ«ãƒ‰VerNo.ã€€ã€€ã€€ï¼š%APPVERSION%
-@ECHO ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³æ§‹æˆï¼š%BUILDMODE% >> %LOG_DIR%\%LOGFILE%
-@ECHO ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³æ§‹æˆï¼š%BUILDMODE%
+@ECHO ƒrƒ‹ƒhVerNo.@@@F%APPVERSION% >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒrƒ‹ƒhVerNo.@@@F%APPVERSION%
+@ECHO ƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬F%BUILDMODE% >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒ\ƒŠƒ…[ƒVƒ‡ƒ“\¬F%BUILDMODE%
 @ECHO ************************************************************************** >> %LOG_DIR%\%LOGFILE%
 @ECHO **************************************************************************
 PAUSE
 
-REM -----2015/01/16å‰Šé™¤_START-----
-REM -----2009/11/09è¿½åŠ _START-----
-REM //"Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"åœæ­¢
-REM @ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã‚’åœæ­¢ã—ã¾ã™ã€‚
+REM -----2015/01/16íœ_START-----
+REM -----2009/11/09’Ç‰Á_START-----
+REM //"Symantec AntiVirus ƒT[ƒrƒX"’âŽ~
+REM @ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚ð’âŽ~‚µ‚Ü‚·B
 REM net stop "Symantec AntiVirus" >> %LOG_DIR%\%LOGFILE%
 REM IF ERRORLEVEL 1 (
-REM 	@ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã‚’åœæ­¢å‡ºæ¥ã¾ã›ã‚“ã§ã—ãŸã€‚
-REM 	@ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã‚’æ‰‹å‹•ã§åœæ­¢å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦å…ˆã«é€²ã‚“ã§ãã ã•ã„ã€‚
+REM 	@ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚ð’âŽ~o—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B
+REM 	@ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚ðŽè“®‚Å’âŽ~ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚Äæ‚Éi‚ñ‚Å‚­‚¾‚³‚¢B
 REM 	PAUSE
 REM ) else (
-REM 	@ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã¯æ­£å¸¸ã«åœæ­¢ã•ã‚Œã¾ã—ãŸã€‚
+REM 	@ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚Í³í‚É’âŽ~‚³‚ê‚Ü‚µ‚½B
 REM )
-REM -----2009/11/09è¿½åŠ _END-----
-REM -----2015/01/16å‰Šé™¤_END-----
+REM -----2009/11/09’Ç‰Á_END-----
+REM -----2015/01/16íœ_END-----
 
-REM //VSWebCacheå‰Šé™¤
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€ã‚’å‰Šé™¤ >> %LOG_DIR%\%LOGFILE%
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€ã‚’å‰Šé™¤
+REM //VSWebCacheíœ
+rem 2019/02/22 CHG Start
+rem @ECHO VSWebCacheƒtƒHƒ‹ƒ_‚ðíœ >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time% VSWebCacheƒtƒHƒ‹ƒ_‚ðíœ >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO VSWebCacheƒtƒHƒ‹ƒ_‚ðíœ
 %~dp0Sub_Module\DelWebCache.vbs >> %LOG_DIR%\%LOGFILE%
 IF ERRORLEVEL 1 (
 SET TOTAL_ERRFLG=1
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€ã‚’å‰Šé™¤å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦å…ˆã«é€²ã‚“ã§ãã ã•ã„
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ï¼šC:\Users\[ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå]\VSWebCache
-PAUSE
+rem 2019/02/22 CHG Start
+rem @ECHO VSWebCacheƒtƒHƒ‹ƒ_íœ_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time% VSWebCacheƒtƒHƒ‹ƒ_íœ_NG >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO VSWebCacheƒtƒHƒ‹ƒ_íœ_NG
+rem 2019/02/22 DEL Start
+rem @ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+rem @ECHO VSWebCacheƒtƒHƒ‹ƒ_‚ðíœŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚Äæ‚Éi‚ñ‚Å‚­‚¾‚³‚¢
+rem @ECHO VSWebCacheƒtƒHƒ‹ƒ_ƒpƒXFC:\Users\[ƒAƒJƒEƒ“ƒg–¼]\VSWebCache
+rem PAUSE
+rem 2019/02/22 DEL End
+rem 2019/02/22 CHG Start
+rem @ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ---- >> %LOG_DIR%\%LOGFILE%
+rem @ECHO VSWebCacheƒtƒHƒ‹ƒ_ƒpƒXFC:\Users\[ƒAƒJƒEƒ“ƒg–¼]\VSWebCache >> %LOG_DIR%\%LOGFILE%
+rem ) ELSE (
+rem @ECHO VSWebCacheƒtƒHƒ‹ƒ_íœ_OK >> %LOG_DIR%\%LOGFILE%
+rem @ECHO VSWebCacheƒtƒHƒ‹ƒ_íœ_OK
+rem )
+@ECHO %date% %time%  ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ---- >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  VSWebCacheƒtƒHƒ‹ƒ_ƒpƒXFC:\Users\[ƒAƒJƒEƒ“ƒg–¼]\VSWebCache >> %LOG_DIR%\%LOGFILE%
 ) ELSE (
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO VSWebCacheãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_OK
+@ECHO %date% %time%  VSWebCacheƒtƒHƒ‹ƒ_íœ_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  VSWebCacheƒtƒHƒ‹ƒ_íœ_OK
 )
-
-REM //ãƒ“ãƒ«ãƒ‰ã‚½ãƒ¼ã‚¹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
+rem 2019/02/22 CHG End
+REM //ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO ãƒ“ãƒ«ãƒ‰ã‚½ãƒ¼ã‚¹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ— >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ“ãƒ«ãƒ‰ã‚½ãƒ¼ã‚¹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
+rem 2019/02/22 CHG Start
+rem @ECHO ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv
 CALL :PROC_COPY %SOLUTION_DIR% %SOURCE_BACKUP%\Source\
 IF %ERRFLG%==1 (
 SET TOTAL_ERRFLG=1
-@ECHO ãƒ“ãƒ«ãƒ‰ã‚½ãƒ¼ã‚¹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ“ãƒ«ãƒ‰ã‚½ãƒ¼ã‚¹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO %SOLUTION_DIR%\ ã‚’ %SOURCE_BACKUP%\Source\ ã«ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„
-@ECHO ã‚³ãƒ”ãƒ¼å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
-PAUSE
+rem 2019/02/22 CHG Start
+rem @ECHO ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv_NG >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv_NG
+rem 2019/02/22 CHG Start
+rem @ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+rem @ECHO %SOLUTION_DIR%\ ‚ð %SOURCE_BACKUP%\Source\ ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+rem @ECHO ƒRƒs[Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
+rem PAUSE
+@ECHO %date% %time%  ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ---- >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  ƒXƒNƒŠƒvƒgƒGƒ‰[‚É‚È‚Á‚½‚Ì‚ÅAPowerShell‚Å‹­§“I‚ÉƒRƒs[‚·‚é >> %LOG_DIR%\%LOGFILE%
+rem ƒXƒNƒŠƒvƒgƒGƒ‰[‚É‚È‚Á‚½‚Ì‚ÅAPowerShell‚Å‹­§“I‚ÉƒRƒs[‚·‚é
+	powershell -ExecutionPolicy RemoteSigned -Command "try { copy-item %SOLUTION_DIR%\* %SOURCE_BACKUP%\Source\ -Force -Recurse  -ErrorAction:Stop }catch { exit 9 };exit $LASTEXITCODE"
+	IF ERRORLEVEL 1 (
+		@ECHO %date% %time%   PowerShell‚É‚æ‚é‹­§ƒRƒs[_NG Powershell‚©‚çŽó‚¯Žæ‚Á‚½–ß‚è’l¨%ERRORLEVEL%
+		@ECHO %date% %time%   ˆ—’†’f
+		@ECHO %SOLUTION_DIR%\ ‚ð %SOURCE_BACKUP%\Source\ ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+		@ECHO ƒRƒs[Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
+		PAUSE
+	) ELSE (
+		@ECHO %date% %time%  PowerShell‚É‚æ‚é‹­§ƒRƒs[Š®—¹ >> %LOG_DIR%\%LOGFILE%
+	)
+rem 2019/02/22 CHG End
 ) ELSE (
-@ECHO ãƒ“ãƒ«ãƒ‰ã‚½ãƒ¼ã‚¹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ“ãƒ«ãƒ‰ã‚½ãƒ¼ã‚¹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—_OK
+rem 2019/02/22 CHG Start
+rem @ECHO ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv_OK >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO ƒrƒ‹ƒhƒ\[ƒXƒoƒbƒNƒAƒbƒv_OK
 )
 
-REM //InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ
+REM //InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ
+rem 2019/02/22 CHG Start
+rem @ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬ >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬ >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬
 CALL :PROC_COPY %SOLUTION_DIR%\XSD %Temp_InstallImage%\Data\XSD\
 CALL :PROC_COPY %SOLUTION_DIR%\SVF %Temp_InstallImage%\Data\SVF\
-CALL :PROC_COPY %SOLUTION_DIR%\EXCEL\å±Š %Temp_InstallImage%\Data\\EXCEL\
-CALL :PROC_COPY %SOLUTION_DIR%\EXCEL\æŒ‡å›³ %Temp_InstallImage%\Data\\EXCEL\
-CALL :PROC_COPY %SOLUTION_DIR%\EXCEL\å…±é€š %Temp_InstallImage%\Data\\EXCEL\
+CALL :PROC_COPY %SOLUTION_DIR%\EXCEL\“Í %Temp_InstallImage%\Data\\EXCEL\
+CALL :PROC_COPY %SOLUTION_DIR%\EXCEL\Žw} %Temp_InstallImage%\Data\\EXCEL\
+CALL :PROC_COPY %SOLUTION_DIR%\EXCEL\‹¤’Ê %Temp_InstallImage%\Data\\EXCEL\
 CALL :PROC_COPY %SOLUTION_DIR%\Others\IEWebControls\webctrl_client %Temp_InstallImage%\Data\\Web\webctrl_client\
 CALL :PROC_COPY %SOLUTION_DIR%\Configs %Temp_InstallImage%\Configs\
 CALL :PROC_COPY %SOLUTION_DIR%\ReleaseScripts %Temp_InstallImage%\ReleaseScripts\
 CALL :PROC_COPY %SOLUTION_DIR%\Scripts %Temp_InstallImage%\Scripts\
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) DEL Start
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) DEL Start
 REM CALL :PROC_RLSTRG LibRls_E
 REM CALL :PROC_RLSTRG LibRls
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) DEL End
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) DEL End
 IF %ERRFLG%==1 (
 SET TOTAL_ERRFLG=1
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO ã‚³ãƒ”ãƒ¼ã«å¤±æ•—ã—ã¦ã„ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã‚’ %Temp_InstallImage% ã«ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„
-@ECHO ã‚³ãƒ”ãƒ¼å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
+rem 2019/02/22 CHG Start
+rem @ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬_NG >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO ƒRƒs[‚ÉŽ¸”s‚µ‚Ä‚¢‚éƒtƒHƒ‹ƒ_‚ð %Temp_InstallImage% ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ƒRƒs[Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
+rem 2019/02/22 CHG Start
+rem (ƒRƒƒ“ƒg‚Ì‚Ý)Ž¸”s‚µ‚½ƒfƒBƒŒƒNƒgƒŠ‚ª“Á’è‚Å‚«‚È‚¢‚½‚ßA‹­§“I‚ÈƒRƒs[‚Ís‚í‚È‚¢i‘¼‚ÅPowerShell‚ÅƒRƒs[‚µ‚½‚Ì‚à“¯—l‚ÉApause‚³‚¹‚Æ‚­‚×‚«Hj
+rem 2019/02/22 CHG end
 PAUSE
 ) ELSE (
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_OK
+rem 2019/02/22 CHG Start
+rem @ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬_OK >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ì¬_OK
 )
 
-REM //binãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ
+REM //binƒtƒHƒ‹ƒ_ì¬
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ >> %LOG_DIR%\%LOGFILE%
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ
+rem 2019/02/22 CHG Start
+rem @ECHO binƒtƒHƒ‹ƒ_ì¬ >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  binƒtƒHƒ‹ƒ_ì¬ >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHG End
+@ECHO binƒtƒHƒ‹ƒ_ì¬
 CALL :PROC_COPY %SOLUTION_DIR%\bin_Refer\* %SOLUTION_DIR%\bin\ 
 REM //2015/10/19 A00855 ADD START
 CALL :PROC_COPY C:\CC01"(dev)"\CC01.dll %SOLUTION_DIR%\bin\
@@ -199,190 +278,201 @@ REM //2015/10/19 A00855 ADD END
 IF %ERRFLG%==1 (
 rem 2019/02/22 CHK Start
 rem SET TOTAL_ERRFLG=1
-rem @ECHO binãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_NG >> %LOG_DIR%\%LOGFILE%
-rem @ECHO binãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_NG
-rem @ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-rem @ECHO %SOLUTION_DIR%\bin_Refer\ ã‚’ %SOLUTION_DIR%\bin\ ã«ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„
-rem @ECHO ã‚³ãƒ”ãƒ¼å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
+rem @ECHO binƒtƒHƒ‹ƒ_ì¬_NG >> %LOG_DIR%\%LOGFILE%
+rem @ECHO binƒtƒHƒ‹ƒ_ì¬_NG
+rem @ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+rem @ECHO %SOLUTION_DIR%\bin_Refer\ ‚ð %SOLUTION_DIR%\bin\ ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+rem @ECHO ƒRƒs[Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
 rem PAUSE
 
-rem ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚¨ãƒ©ãƒ¼ã«ãªã£ãŸã®ã§ã€PowerShellã§å¼·åˆ¶çš„ã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
-rem powershell -ExecutionPolicy RemoteSigned -Command "copy-item %rootDir%\aa\* %rootDir%\bb\ -Force -Recurse"
-powershell -ExecutionPolicy RemoteSigned -Command "copy-item %SOLUTION_DIR%\bin_Refer\* %SOLUTION_DIR%\bin\ -Force -Recurse"
+rem ƒXƒNƒŠƒvƒgƒGƒ‰[‚É‚È‚Á‚½‚Ì‚ÅAPowerShell‚Å‹­§“I‚ÉƒRƒs[‚·‚é
+	powershell -ExecutionPolicy RemoteSigned -Command "try { copy-item %SOLUTION_DIR%\bin_Refer\* %SOLUTION_DIR%\bin\ -Force -Recurse  -ErrorAction:Stop }catch { exit 9 };exit $LASTEXITCODE"
+	IF ERRORLEVEL 1 (
+		@ECHO %date% %time%   PowerShell‚É‚æ‚é‹­§ƒRƒs[_NG Powershell‚©‚çŽó‚¯Žæ‚Á‚½–ß‚è’l¨%ERRORLEVEL%
+		@ECHO %date% %time%   ˆ—’†’f
+		@ECHO %SOLUTION_DIR%\bin_Refer\ ‚ð %SOLUTION_DIR%\bin\ ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+		@ECHO ƒRƒs[Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
+		PAUSE
+	) ELSE (
+		@ECHO %date% %time%  PowerShell‚É‚æ‚é‹­§ƒRƒs[Š®—¹ >> %LOG_DIR%\%LOGFILE%
+	)
 rem 2019/02/22 CHK End
 ) ELSE (
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_OK
+rem 2019/02/22 CHK Start
+rem @ECHO binƒtƒHƒ‹ƒ_ì¬_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time%  binƒtƒHƒ‹ƒ_ì¬_OK >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHK End
+@ECHO binƒtƒHƒ‹ƒ_ì¬_OK
 )
 
-REM //ã‚¦ã‚£ãƒ«ã‚¹ãƒã‚¹ã‚¿ãƒ¼ã‚¹ãƒˆãƒƒãƒ—
+REM //ƒEƒBƒ‹ƒXƒoƒXƒ^[ƒXƒgƒbƒv
 rem @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 rem @ECHO --------------------------------------------------------------------------
-rem @ECHO ã‚¦ã‚£ãƒ«ã‚¹ãƒã‚¹ã‚¿ãƒ¼ã‚¹ãƒˆãƒƒãƒ— >> %LOG_DIR%\%LOGFILE%
-rem @ECHO ã‚¦ã‚£ãƒ«ã‚¹ãƒã‚¹ã‚¿ãƒ¼ã‚¹ãƒˆãƒƒãƒ—
+rem @ECHO ƒEƒBƒ‹ƒXƒoƒXƒ^[ƒXƒgƒbƒv >> %LOG_DIR%\%LOGFILE%
+rem @ECHO ƒEƒBƒ‹ƒXƒoƒXƒ^[ƒXƒgƒbƒv
 rem NET stop "OfficeScanNT RealTime Scan"  >> %LOG_DIR%\%LOGFILE%
 
-REM //äº‹å‰ãƒ“ãƒ«ãƒ‰
+REM //Ž–‘Oƒrƒ‹ƒh
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-CALL :PROC_Build %SOLUTION_DIR%\Lib69A_äº‹å‰ãƒ“ãƒ«ãƒ‰.sln
+CALL :PROC_Build %SOLUTION_DIR%\Lib69A_Ž–‘Oƒrƒ‹ƒh.sln
 
-REM //ãƒãƒƒãƒæ©Ÿèƒ½ãƒ“ãƒ«ãƒ‰
+REM //ƒoƒbƒ`‹@”\ƒrƒ‹ƒh
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
 CALL :PROC_Build %SOLUTION_DIR%\Lib69A.sln
 
-REM //Webæ©Ÿèƒ½ãƒ“ãƒ«ãƒ‰
+REM //Web‹@”\ƒrƒ‹ƒh
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
 CALL :PROC_Build %SOLUTION_DIR%\Lib69A_Web.sln
 
-REM //ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ç”¨RTBWebãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ
+REM //ƒvƒŠƒRƒ“ƒpƒCƒ‹—pRTBWebƒtƒHƒ‹ƒ_ì¬
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ç”¨Webãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ç”¨Webãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ
-@ECHO ã€RTBã€‘ >> %LOG_DIR%\%LOGFILE%
-@ECHO ã€RTBã€‘
+@ECHO ƒvƒŠƒRƒ“ƒpƒCƒ‹—pWebƒtƒHƒ‹ƒ_ì¬ >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒvƒŠƒRƒ“ƒpƒCƒ‹—pWebƒtƒHƒ‹ƒ_ì¬
+@ECHO yRTBz >> %LOG_DIR%\%LOGFILE%
+@ECHO yRTBz
 CALL :PROC_COPY %SOLUTION_DIR%\Web %SOLUTION_DIR%\RTB_Web\
 CALL :PROC_COPY %SOLUTION_DIR%\bin_Refer %SOLUTION_DIR%\RTB_Web\bin\
 IF %ERRFLG%==1 (
 SET TOTAL_ERRFLG=1
-@ECHO ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ç”¨Webãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ç”¨Webãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO ã‚³ãƒ”ãƒ¼ã«å¤±æ•—ã—ã¦ã„ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã‚’ %SOLUTION_DIR%\RTB_Web\ ã«ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„
-@ECHO ã‚³ãƒ”ãƒ¼å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
+@ECHO ƒvƒŠƒRƒ“ƒpƒCƒ‹—pWebƒtƒHƒ‹ƒ_ì¬_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒvƒŠƒRƒ“ƒpƒCƒ‹—pWebƒtƒHƒ‹ƒ_ì¬_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO ƒRƒs[‚ÉŽ¸”s‚µ‚Ä‚¢‚éƒtƒHƒ‹ƒ_‚ð %SOLUTION_DIR%\RTB_Web\ ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ƒRƒs[Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
 PAUSE
 ) ELSE (
-@ECHO ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ç”¨Webãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ç”¨Webãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ_OK
+@ECHO ƒvƒŠƒRƒ“ƒpƒCƒ‹—pWebƒtƒHƒ‹ƒ_ì¬_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒvƒŠƒRƒ“ƒpƒCƒ‹—pWebƒtƒHƒ‹ƒ_ì¬_OK
 )
 
-REM //RTBWebãƒ•ã‚©ãƒ«ãƒ€ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+REM //RTBWebƒtƒHƒ‹ƒ_ƒvƒŠƒRƒ“ƒpƒCƒ‹
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
 CALL :PROC_PRECOMPILE %SOLUTION_DIR%\RTB_Web
 
-REM //ã‚µãƒ¼ãƒãƒ¼ç”Ÿå­˜ç›£è¦–(PING)æ©Ÿèƒ½ãƒ“ãƒ«ãƒ‰
+REM //ƒT[ƒo[¶‘¶ŠÄŽ‹(PING)‹@”\ƒrƒ‹ƒh
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
 CALL :PROC_Build %SOLUTION_DIR%\Lib69A_02.sln
 
-REM //ã‚¦ã‚£ãƒ«ã‚¹ãƒã‚¹ã‚¿ãƒ¼ã‚¹ã‚¿ãƒ¼ãƒˆ
+REM //ƒEƒBƒ‹ƒXƒoƒXƒ^[ƒXƒ^[ƒg
 rem @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 rem @ECHO --------------------------------------------------------------------------
-rem @ECHO ã‚¦ã‚£ãƒ«ã‚¹ãƒã‚¹ã‚¿ãƒ¼ã‚¹ã‚¿ãƒ¼ãƒˆ >> %LOG_DIR%\%LOGFILE%
-rem @ECHO ã‚¦ã‚£ãƒ«ã‚¹ãƒã‚¹ã‚¿ãƒ¼ã‚¹ã‚¿ãƒ¼ãƒˆ
+rem @ECHO ƒEƒBƒ‹ƒXƒoƒXƒ^[ƒXƒ^[ƒg >> %LOG_DIR%\%LOGFILE%
+rem @ECHO ƒEƒBƒ‹ƒXƒoƒXƒ^[ƒXƒ^[ƒg
 rem NET start "OfficeScanNT RealTime Scan"  >> %LOG_DIR%\%LOGFILE%
 
-REM //binãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼
+REM //binƒtƒHƒ‹ƒ_ƒRƒs[
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼ >> %LOG_DIR%\%LOGFILE%
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼
+@ECHO binƒtƒHƒ‹ƒ_ƒRƒs[ >> %LOG_DIR%\%LOGFILE%
+@ECHO binƒtƒHƒ‹ƒ_ƒRƒs[
 CALL :PROC_COPY %SOLUTION_DIR%\bin\* %SOURCE_BACKUP%\Release\
 CALL :PROC_COPY %SOLUTION_DIR%\bin\* %Temp_InstallImage%\Data\Exec\
 IF %ERRFLG%==1 (
 SET TOTAL_ERRFLG=1
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO ã‚³ãƒ”ãƒ¼ãŒå¤±æ•—ã—ã¦ã„ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã« %SOLUTION_DIR%\bin\ ã‚’ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„
-@ECHO ã‚³ãƒ”ãƒ¼å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
+@ECHO binƒtƒHƒ‹ƒ_ƒRƒs[_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO binƒtƒHƒ‹ƒ_ƒRƒs[_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO ƒRƒs[‚ªŽ¸”s‚µ‚Ä‚¢‚éƒtƒHƒ‹ƒ_‚É %SOLUTION_DIR%\bin\ ‚ðƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ƒRƒs[Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
 PAUSE
 ) ELSE (
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO binãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼_OK
+@ECHO binƒtƒHƒ‹ƒ_ƒRƒs[_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO binƒtƒHƒ‹ƒ_ƒRƒs[_OK
 )
 
-REM //InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚º
+REM //InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ƒJƒXƒ^ƒ}ƒCƒY
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚º >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚º
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ƒJƒXƒ^ƒ}ƒCƒY >> %LOG_DIR%\%LOGFILE%
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ƒJƒXƒ^ƒ}ƒCƒY
 CALL :PROC_FILEDEL %Temp_InstallImage%\Data\Exec\Interop.COMAPQ6Lib.dll
 CALL :PROC_COPY %SOLUTION_DIR%\Scripts\Program\CMD\J69AE0_CMD.bat %Temp_InstallImage%\Data\Exec\
 IF %ERRFLG%==1 (
 SET TOTAL_ERRFLG=1
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚º_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚º_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO å¤±æ•—ã—ã¦ã„ã‚‹ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚ºå†…å®¹ã‚’è¡Œã£ã¦ãã ã•ã„
-@ECHO å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ƒJƒXƒ^ƒ}ƒCƒY_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ƒJƒXƒ^ƒ}ƒCƒY_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO Ž¸”s‚µ‚Ä‚¢‚éƒJƒXƒ^ƒ}ƒCƒY“à—e‚ðs‚Á‚Ä‚­‚¾‚³‚¢
+@ECHO Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
 PAUSE
 ) ELSE (
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚º_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚º_OK
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ƒJƒXƒ^ƒ}ƒCƒY_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO InstallImageƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_ƒJƒXƒ^ƒ}ƒCƒY_OK
 )
 
-REM //å€‹ç¤¾åˆ¥InstallImageä½œæˆ
+REM //ŒÂŽÐ•ÊInstallImageì¬
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO å€‹ç¤¾åˆ¥InstallImageä½œæˆ >> %LOG_DIR%\%LOGFILE%
-@ECHO å€‹ç¤¾åˆ¥InstallImageä½œæˆ
-@ECHO ã€RTBã€‘ >> %LOG_DIR%\%LOGFILE%
-@ECHO ã€RTBã€‘
+@ECHO ŒÂŽÐ•ÊInstallImageì¬ >> %LOG_DIR%\%LOGFILE%
+@ECHO ŒÂŽÐ•ÊInstallImageì¬
+@ECHO yRTBz >> %LOG_DIR%\%LOGFILE%
+@ECHO yRTBz
 CALL :PROC_COPY %Temp_InstallImage% %RTB_InstallImage%\
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) CHG Start
-REM CALL :PROC_COPY %RTB_InstallImage%\Configs\æœ¬ç•ª %RTB_InstallImage%\Configs\ç½å¯¾\
-CALL :PROC_COPY %RTB_InstallImage%\Configs\æœ¬ç•ª %RTB_InstallImage%\Configs\æ•°ç†æ±ºç®—\
-CALL :PROC_COPY %Temp_InstallImage%\Configs\æ•°ç†æ±ºç®— %RTB_InstallImage%\Configs\æ•°ç†æ±ºç®—\
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) CHG End
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) CHG Start
+REM CALL :PROC_COPY %RTB_InstallImage%\Configs\–{”Ô %RTB_InstallImage%\Configs\Ð‘Î\
+CALL :PROC_COPY %RTB_InstallImage%\Configs\–{”Ô %RTB_InstallImage%\Configs\”—ŒˆŽZ\
+CALL :PROC_COPY %Temp_InstallImage%\Configs\”—ŒˆŽZ %RTB_InstallImage%\Configs\”—ŒˆŽZ\
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) CHG End
 REM //2013/03/27 T-031-12-253-02 ADD START
-CALL :PROC_COPY %RTB_InstallImage%\Configs\æœ¬ç•ª %RTB_InstallImage%\Configs\æ ƒæœ¨ç½å¯¾\
-CALL :PROC_COPY %Temp_InstallImage%\Configs\æ ƒæœ¨ç½å¯¾ %RTB_InstallImage%\Configs\æ ƒæœ¨ç½å¯¾\
+CALL :PROC_COPY %RTB_InstallImage%\Configs\–{”Ô %RTB_InstallImage%\Configs\“È–ØÐ‘Î\
+CALL :PROC_COPY %Temp_InstallImage%\Configs\“È–ØÐ‘Î %RTB_InstallImage%\Configs\“È–ØÐ‘Î\
 REM //2013/03/27 T-031-12-253-02 ADD END
 CALL :PROC_COPY %SOLUTION_DIR%\RTB_Web %RTB_InstallImage%\Data\Web\
 IF %ERRFLG%==1 (
 SET TOTAL_ERRFLG=1
-@ECHO å€‹ç¤¾åˆ¥InstallImageä½œæˆ_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO å€‹ç¤¾åˆ¥InstallImageä½œæˆ_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO å¤±æ•—ã—ã¦ã„ã‚‹ã‚³ãƒ”ãƒ¼å‡¦ç†ã‚’è¡Œã£ã¦ãã ã•ã„
-@ECHO å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
+@ECHO ŒÂŽÐ•ÊInstallImageì¬_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO ŒÂŽÐ•ÊInstallImageì¬_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO Ž¸”s‚µ‚Ä‚¢‚éƒRƒs[ˆ—‚ðs‚Á‚Ä‚­‚¾‚³‚¢
+@ECHO Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
 PAUSE
 ) ELSE (
-@ECHO å€‹ç¤¾åˆ¥InstallImageä½œæˆ_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO å€‹ç¤¾åˆ¥InstallImageä½œæˆ_OK
+@ECHO ŒÂŽÐ•ÊInstallImageì¬_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO ŒÂŽÐ•ÊInstallImageì¬_OK
 CALL :PROC_DEL %Temp_InstallImage%
 )
 
-REM //InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ
+REM //InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬
 SET ERRFLG=0
 @ECHO -------------------------------------------------------------------------- >> %LOG_DIR%\%LOGFILE%
 @ECHO --------------------------------------------------------------------------
-@ECHO InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ
-@ECHO ã€RTBã€‘ >> %LOG_DIR%\%LOGFILE%
-@ECHO ã€RTBã€‘
+@ECHO InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬ >> %LOG_DIR%\%LOGFILE%
+@ECHO InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬
+@ECHO yRTBz >> %LOG_DIR%\%LOGFILE%
+@ECHO yRTBz
 CALL :PROC_IstImgOUTPUT %RTB_InstallImage%
 IF %ERRFLG%==1 (
 SET TOTAL_ERRFLG=1
-@ECHO InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO å¤±æ•—ã—ã¦ã„ã‚‹å€‹ç¤¾ã®InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ã‚’ä½œæˆã—ã¦ãã ã•ã„
-@ECHO ä½œæˆå¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
+@ECHO InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO Ž¸”s‚µ‚Ä‚¢‚éŒÂŽÐ‚ÌInstallImageƒtƒ@ƒCƒ‹ˆê——‚ðì¬‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ì¬ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
 PAUSE
 ) ELSE (
-@ECHO InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ_OK
+@ECHO InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬_OK
 )
 
-REM //ãƒ“ãƒ«ãƒ‰å‡¦ç†çµ‚äº†è¡¨ç¤º
+REM //ƒrƒ‹ƒhˆ—I—¹•\Ž¦
 IF %TOTAL_ERRFLG%==1 (
 @ECHO ************************************************************************** >> %LOG_DIR%\%LOGFILE%
 @ECHO **************************************************************************
-@ECHO  //ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‡¦ç†ã‚¨ãƒ©ãƒ¼çµ‚äº† // >> %LOG_DIR%\%LOGFILE%
-@ECHO  //ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‡¦ç†ã‚¨ãƒ©ãƒ¼çµ‚äº† //
-@ECHO  è­¦å‘Šï¼šãƒ“ãƒ«ãƒ‰ä½œæ¥­ä¸­ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—æ‰‹ä½œæ¥­ã§å¯¾å¿œã—ãŸä½œæ¥­ã«ã¤ã„ã¦ã€
-@ECHO  å†åº¦ç¢ºèªã‚’è¡Œã£ã¦ãã ã•ã„
-@ECHO  æœ¬ç•ªãƒ“ãƒ«ãƒ‰æ™‚ã«ã¯ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ãŸå ´åˆã¯ã€å…¨ã¦æœ€åˆã‹ã‚‰ã‚„ã‚Šç›´ã—ã¦ãã ã•ã„
+@ECHO  //ƒrƒ‹ƒhƒXƒNƒŠƒvƒgˆ—ƒGƒ‰[I—¹ // >> %LOG_DIR%\%LOGFILE%
+@ECHO  //ƒrƒ‹ƒhƒXƒNƒŠƒvƒgˆ—ƒGƒ‰[I—¹ //
+@ECHO  ŒxFƒrƒ‹ƒhì‹Æ’†‚ÉƒGƒ‰[‚ª”­¶‚µŽèì‹Æ‚Å‘Î‰ž‚µ‚½ì‹Æ‚É‚Â‚¢‚ÄA
+@ECHO  Ä“xŠm”F‚ðs‚Á‚Ä‚­‚¾‚³‚¢
+@ECHO  –{”Ôƒrƒ‹ƒhŽž‚É‚ÍƒGƒ‰[‚ª”­¶‚µ‚½ê‡‚ÍA‘S‚ÄÅ‰‚©‚ç‚â‚è’¼‚µ‚Ä‚­‚¾‚³‚¢
 @ECHO ************************************************************************** >> %LOG_DIR%\%LOGFILE%
 @ECHO **************************************************************************
 PAUSE
@@ -390,44 +480,44 @@ GOTO END
 )
 
 
-REM ///é–‹ç™ºConfigãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ”ãƒ¼å‡¦ç†è¿½åŠ _Start/// -----2010/01/19-----
-REM ///x64ãƒ“ãƒ«ãƒ‰ã®ã¿ä»¥ä¸‹ã®å‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹ã€‚///
-REM ///é…å»¶ç’°å¢ƒå¤‰æ•°ã«å¯¾å¿œ_Start/// -----2010/04/12-----
+REM ///ŠJ”­Configƒtƒ@ƒCƒ‹ƒRƒs[ˆ—’Ç‰Á_Start/// -----2010/01/19-----
+REM ///x64ƒrƒ‹ƒh‚Ì‚ÝˆÈ‰º‚Ìˆ—‚ðŽÀs‚·‚éB///
+REM ///’x‰„ŠÂ‹«•Ï”‚É‘Î‰ž_Start/// -----2010/04/12-----
 SET ERRFLG=0
 IF %BUILD_NO%==1 (
-	CALL :PROC_COPY %Conf_Dir%\é–‹ç™º %RTB_InstallImage%\Configs\é–‹ç™º\
+	CALL :PROC_COPY %Conf_Dir%\ŠJ”­ %RTB_InstallImage%\Configs\ŠJ”­\
 )
 IF %BUILD_NO%==1 (
 	IF %ERRFLG%==1 (
 		SET TOTAL_ERRFLG=1
-		@ECHO é–‹ç™ºç”¨Configã‚³ãƒ”ãƒ¼å‡¦ç†_NG >> %LOG_DIR%\%LOGFILE%
-		@ECHO é–‹ç™ºç”¨Configã‚³ãƒ”ãƒ¼å‡¦ç†_NG
-		@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-		@ECHO æ‰‹å‹•ã§ %Conf_Dir%\é–‹ç™º ã‹ã‚‰ %RTB_InstallImage%\Configs\ ã¸
-		@ECHO é–‹ç™ºç”¨Configã®ã‚³ãƒ”ãƒ¼ã‚’è¡Œã£ã¦ä¸‹ã•ã„ã€‚
-		@ECHO å®Œäº†å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„ã€‚
+		@ECHO ŠJ”­—pConfigƒRƒs[ˆ—_NG >> %LOG_DIR%\%LOGFILE%
+		@ECHO ŠJ”­—pConfigƒRƒs[ˆ—_NG
+		@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+		@ECHO Žè“®‚Å %Conf_Dir%\ŠJ”­ ‚©‚ç %RTB_InstallImage%\Configs\ ‚Ö
+		@ECHO ŠJ”­—pConfig‚ÌƒRƒs[‚ðs‚Á‚Ä‰º‚³‚¢B
+		@ECHO Š®—¹ŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢B
 		PAUSE
 	) ELSE (
-		@ECHO é–‹ç™ºç”¨Configã‚³ãƒ”ãƒ¼å‡¦ç†_OK >> %LOG_DIR%\%LOGFILE%
-		@ECHO é–‹ç™ºç”¨Configã‚³ãƒ”ãƒ¼å‡¦ç†_OK
+		@ECHO ŠJ”­—pConfigƒRƒs[ˆ—_OK >> %LOG_DIR%\%LOGFILE%
+		@ECHO ŠJ”­—pConfigƒRƒs[ˆ—_OK
 	)
 )
-REM ///é…å»¶ç’°å¢ƒå¤‰æ•°ã«å¯¾å¿œ_End/// -----2010/04/12-----
-REM ///é–‹ç™ºConfigãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ”ãƒ¼å‡¦ç†è¿½åŠ _End/// -----2010/01/19-------
+REM ///’x‰„ŠÂ‹«•Ï”‚É‘Î‰ž_End/// -----2010/04/12-----
+REM ///ŠJ”­Configƒtƒ@ƒCƒ‹ƒRƒs[ˆ—’Ç‰Á_End/// -----2010/01/19-------
 
-REM ///ãƒ•ã‚¡ã‚¤ãƒ«ãƒªãƒãƒ¼ãƒ åŠã³ã€ãƒ‡ãƒªãƒ¼ãƒˆè‡ªå‹•åŒ–ã«ä¼´ã†å‡¦ç†è¿½åŠ /// -----2009/06/24 è¿½åŠ _Start-----
+REM ///ƒtƒ@ƒCƒ‹ƒŠƒl[ƒ€‹y‚ÑAƒfƒŠ[ƒgŽ©“®‰»‚É”º‚¤ˆ—’Ç‰Á/// -----2009/06/24 ’Ç‰Á_Start-----
 SET ERRFLG=0
 IF %BUILD_NO%==1 CALL :PROC_ReName_x64
 IF %BUILD_NO%==2 CALL :PROC_ReName_AnyCPU
-REM ///ãƒ•ã‚¡ã‚¤ãƒ«ãƒªãƒãƒ¼ãƒ åŠã³ã€ãƒ‡ãƒªãƒ¼ãƒˆè‡ªå‹•åŒ–ã«ä¼´ã†å‡¦ç†è¿½åŠ /// -----2009/06/24 è¿½åŠ _End-------
+REM ///ƒtƒ@ƒCƒ‹ƒŠƒl[ƒ€‹y‚ÑAƒfƒŠ[ƒgŽ©“®‰»‚É”º‚¤ˆ—’Ç‰Á/// -----2009/06/24 ’Ç‰Á_End-------
 
 @ECHO ************************************************************************** >> %LOG_DIR%\%LOGFILE%
 @ECHO **************************************************************************
-@ECHO  //ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‡¦ç†æ­£å¸¸çµ‚äº† // >> %LOG_DIR%\%LOGFILE%
+@ECHO  //ƒrƒ‹ƒhƒXƒNƒŠƒvƒgˆ—³íI—¹ // >> %LOG_DIR%\%LOGFILE%
 @ECHO %date% >> %LOG_DIR%\%LOGFILE%
 @ECHO %time% >> %LOG_DIR%\%LOGFILE%
-@ECHO  //ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‡¦ç†æ­£å¸¸çµ‚äº† //
-REM //çµ‚äº†æ™‚åˆ»è¡¨ç¤º
+@ECHO  //ƒrƒ‹ƒhƒXƒNƒŠƒvƒgˆ—³íI—¹ //
+REM //I—¹Žž•\Ž¦
 @ECHO %date% 
 @ECHO %time%
 @ECHO ************************************************************************** >> %LOG_DIR%\%LOGFILE%
@@ -437,182 +527,188 @@ PAUSE
 GOTO END
 
 REM ------------------------------------- 
-REM ã‚µãƒ–ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+REM ƒTƒuƒ‚ƒWƒ…[ƒ‹
 REM ------------------------------------- 
-REM //ãƒ“ãƒ«ãƒ‰VerNo.ãƒ•ã‚©ãƒ«ãƒ€ãƒã‚§ãƒƒã‚¯
+REM //ƒrƒ‹ƒhVerNo.ƒtƒHƒ‹ƒ_ƒ`ƒFƒbƒN
 :PROC_APPVERSION_CHECK
 IF EXIST %1 (
-@ECHO  ãƒ“ãƒ«ãƒ‰VerNo.ãŒé‡è¤‡ã—ã¦ã„ã¾ã™
+rem 2019/02/22 CHK Start
+rem @ECHO  ƒrƒ‹ƒhVerNo.‚ªd•¡‚µ‚Ä‚¢‚Ü‚· >> %LOG_DIR%\%LOGFILE%
+@ECHO %date% %time% ƒrƒ‹ƒhVerNo.‚ªd•¡‚µ‚Ä‚¢‚Ü‚· >> %LOG_DIR%\%LOGFILE%
+rem 2019/02/22 CHK End
 SET APPVERSION=Nothing
-GOTO VerInput_Return
+rem 2019/02/22 DEL Start
+rem GOTO VerInput_Return
+rem 2019/02/22 DEL End
+EXIT 1
 )
 GOTO :EOF
 
-REM //ãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼å‡¦ç†
+REM //ƒtƒHƒ‹ƒ_ƒRƒs[ˆ—
 :PROC_COPY
-@ECHO %1 ã‚’ %2 ã¸ã‚³ãƒ”ãƒ¼ >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ã‚’ %2 ã¸ã‚³ãƒ”ãƒ¼
+@ECHO %1 ‚ð %2 ‚ÖƒRƒs[ >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ‚ð %2 ‚ÖƒRƒs[
 XCOPY /S /E /V /H /Q /Y /G /R %1 %2 >> %LOG_DIR%\%LOGFILE%
 IF ERRORLEVEL 1 (
 SET TOTAL_ERRFLG=1
-@ECHO ã‚³ãƒ”ãƒ¼_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO ã‚³ãƒ”ãƒ¼_NG
+@ECHO ƒRƒs[_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒRƒs[_NG
 SET ERRFLG=1
 )
 GOTO :EOF
 
-REM //ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤å‡¦ç†
+REM //ƒtƒ@ƒCƒ‹íœˆ—
 :PROC_FILEDEL
-@ECHO %1 ã‚’å‰Šé™¤ >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ã‚’å‰Šé™¤
+@ECHO %1 ‚ðíœ >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ‚ðíœ
 DEL /F %1  >> %LOG_DIR%\%LOGFILE%
 IF EXIST %1 (
 SET TOTAL_ERRFLG=1
-@ECHO ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤_NG
+@ECHO ƒtƒ@ƒCƒ‹íœ_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒtƒ@ƒCƒ‹íœ_NG
 SET ERRFLG=1
 )
 GOTO :EOF
 
-REM //ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤å‡¦ç†
+REM //ƒtƒHƒ‹ƒ_íœˆ—
 :PROC_DEL
-@ECHO %1 ã‚’å‰Šé™¤ >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ã‚’å‰Šé™¤
+@ECHO %1 ‚ðíœ >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ‚ðíœ
 RMDIR /S /Q %1  >> %LOG_DIR%\%LOGFILE%
 IF EXIST %1 (
 SET TOTAL_ERRFLG=1
-@ECHO ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_NG
+@ECHO ƒtƒHƒ‹ƒ_íœ_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒtƒHƒ‹ƒ_íœ_NG
 SET ERRFLG=1
 )
 GOTO :EOF
 
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) DEL Start
-REM //ãƒªãƒªãƒ¼ã‚¹ãƒˆãƒªã‚¬ãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆå‡¦ç†
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) DEL Start
+REM //ƒŠƒŠ[ƒXƒgƒŠƒKƒtƒ@ƒCƒ‹ì¬ˆ—
 REM :PROC_RLSTRG
-REM @ECHO %Temp_InstallImage%\%1 ã¸ä½œæˆ >> %LOG_DIR%\%LOGFILE%
-REM @ECHO %Temp_InstallImage%\%1 ã¸ä½œæˆ
+REM @ECHO %Temp_InstallImage%\%1 ‚Öì¬ >> %LOG_DIR%\%LOGFILE%
+REM @ECHO %Temp_InstallImage%\%1 ‚Öì¬
 REM @ECHO %DATE% > %Temp_InstallImage%\%1
 REM IF NOT EXIST %Temp_InstallImage%\%1 (
-REM @ECHO ä½œæˆ_NG >> %LOG_DIR%\%LOGFILE%
-REM @ECHO ä½œæˆ_NG
+REM @ECHO ì¬_NG >> %LOG_DIR%\%LOGFILE%
+REM @ECHO ì¬_NG
 REM SET ERRFLG=1
 REM )
 REM GOTO :EOF
-REM 2017/03/28 åŸºç›¤æ›´æ”¹(å…¨ä½“) DEL End
+REM 2017/03/28 Šî”ÕX‰ü(‘S‘Ì) DEL End
 
-REM //ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ãƒ“ãƒ«ãƒ‰å‡¦ç†
+REM //ƒ\ƒŠƒ…[ƒVƒ‡ƒ“ƒrƒ‹ƒhˆ—
 :PROC_Build
 SET BAT_ERRFLG=0
-@ECHO %1 ãƒ“ãƒ«ãƒ‰ >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ãƒ“ãƒ«ãƒ‰
+@ECHO %1 ƒrƒ‹ƒh >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ƒrƒ‹ƒh
 CALL %~dp0\Sub_Module\Build.bat %1 %LOG_DIR% %BUILDMODE%
 IF %BAT_ERRFLG% == 1 (
 SET TOTAL_ERRFLG=1
-@ECHO %1 ãƒ“ãƒ«ãƒ‰_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ãƒ“ãƒ«ãƒ‰_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO ä¸‹è¨˜ã®ä½œæ¥­ã‚’è¡Œã„ã€å®Œäº†å¾Œä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
-@ECHO ã€ä½œæ¥­å†…å®¹ã€‘
-@ECHO â– ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³å˜ä½ã§ã®æ‰‹å‹•ãƒ“ãƒ«ãƒ‰
-@ECHO ï¼‘ï¼Ž%SOLUTION_DIR%\bin\ ã®ä¸­ã‚’å‰Šé™¤ã—ã¦ãã ã•ã„
-@ECHO ã€€ã€€â€»Lib69A_Web.slnã®å ´åˆã¯ã€%SOLUTION_DIR%\Web\bin ãƒ•ã‚©ãƒ«ãƒ€ã‚‚å‰Šé™¤ã—ã¦ãã ã•ã„
-@ECHO ï¼’ï¼Ž%SOLUTION_DIR%\obj ã‚’ãƒ•ã‚©ãƒ«ãƒ€æ¯Žå‰Šé™¤ã—ã¦ãã ã•ã„
-@ECHO ï¼“ï¼Ž%SOLUTION_DIR%\bin_Refer\ ã‚’ %SOLUTION_DIR%\bin\ ã«ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„
-@ECHO ï¼”ï¼Ž%1 ã‚’é–‹ãã€ãƒ“ãƒ«ãƒ‰ã‚’è¡Œã£ã¦ãã ã•ã„
-@ECHO ï¼•ï¼Ž%SOLUTION_DIR%\bin\ ã‚’ %SOLUTION_DIR%\bin_Refer\ ã«ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„
+@ECHO %1 ƒrƒ‹ƒh_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ƒrƒ‹ƒh_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO ‰º‹L‚Ìì‹Æ‚ðs‚¢AŠ®—¹Œã‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
+@ECHO yì‹Æ“à—ez
+@ECHO ¡ƒ\ƒŠƒ…[ƒVƒ‡ƒ“’PˆÊ‚Å‚ÌŽè“®ƒrƒ‹ƒh
+@ECHO ‚PD%SOLUTION_DIR%\bin\ ‚Ì’†‚ðíœ‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO @@¦Lib69A_Web.sln‚Ìê‡‚ÍA%SOLUTION_DIR%\Web\bin ƒtƒHƒ‹ƒ_‚àíœ‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ‚QD%SOLUTION_DIR%\obj ‚ðƒtƒHƒ‹ƒ_–ˆíœ‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ‚RD%SOLUTION_DIR%\bin_Refer\ ‚ð %SOLUTION_DIR%\bin\ ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ‚SD%1 ‚ðŠJ‚«Aƒrƒ‹ƒh‚ðs‚Á‚Ä‚­‚¾‚³‚¢
+@ECHO ‚TD%SOLUTION_DIR%\bin\ ‚ð %SOLUTION_DIR%\bin_Refer\ ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢
 PAUSE
 ) ELSE (
-@ECHO %1 ãƒ“ãƒ«ãƒ‰_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ãƒ“ãƒ«ãƒ‰_OK
+@ECHO %1 ƒrƒ‹ƒh_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ƒrƒ‹ƒh_OK
 )
 GOTO :EOF
 
-REM //WEBãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«å‡¦ç†
+REM //WEBƒvƒŠƒRƒ“ƒpƒCƒ‹ˆ—
 :PROC_PRECOMPILE
-@ECHO %1 ãƒ•ã‚©ãƒ«ãƒ€ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ« >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ãƒ•ã‚©ãƒ«ãƒ€ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+@ECHO %1 ƒtƒHƒ‹ƒ_ƒvƒŠƒRƒ“ƒpƒCƒ‹ >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ƒtƒHƒ‹ƒ_ƒvƒŠƒRƒ“ƒpƒCƒ‹
 CALL %~dp0\Sub_Module\BuildWeb.bat %1 %LOG_DIR%
 IF %BAT_ERRFLG% == 1 (
 SET TOTAL_ERRFLG=1
-@ECHO %1 ãƒ•ã‚©ãƒ«ãƒ€ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ãƒ•ã‚©ãƒ«ãƒ€ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«_NG
-@ECHO ---- ï¼³ï¼£ï¼²ï¼©ï¼°ï¼´ ï¼¥ï¼²ï¼²ï¼¯ï¼² ï¼ï¼ï¼ï¼ ----
-@ECHO ä¸‹è¨˜ã®ä½œæ¥­ã‚’è¡Œã„ã€å®Œäº†å¾Œä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦æ¬¡ã®å‡¦ç†ã«é€²ã‚“ã§ãã ã•ã„
-@ECHO ã€ä½œæ¥­å†…å®¹ã€‘
-@ECHO ï¼‘ï¼ŽSDKã‚³ãƒžãƒ³ãƒ‰ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã‹ã‚‰æ‰‹å‹•ã§ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚’è¡Œã£ã¦ãã ã•ã„
-@ECHO     ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚³ãƒžãƒ³ãƒ‰ï¼šaspnet_compiler -p %1 -v /Web_Temp %SOLUTION_DIR%\Web_Temp
-@ECHO ï¼’ï¼Žãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«å®Œäº†å¾Œã€%1ã‚’ã€%1_BACKUPã¸ãƒªãƒãƒ¼ãƒ ã—ã¦ãã ã•ã„
-@ECHO ï¼“ï¼Ž%SOLUTION_DIR%\Web_Tempã‚’ã€%1ã¸ãƒªãƒãƒ¼ãƒ ã—ã¦ãã ã•ã„
+@ECHO %1 ƒtƒHƒ‹ƒ_ƒvƒŠƒRƒ“ƒpƒCƒ‹_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ƒtƒHƒ‹ƒ_ƒvƒŠƒRƒ“ƒpƒCƒ‹_NG
+@ECHO ---- ‚r‚b‚q‚h‚o‚s ‚d‚q‚q‚n‚q IIII ----
+@ECHO ‰º‹L‚Ìì‹Æ‚ðs‚¢AŠ®—¹Œã‰½‚©ƒL[‚ð‰Ÿ‚µ‚ÄŽŸ‚Ìˆ—‚Éi‚ñ‚Å‚­‚¾‚³‚¢
+@ECHO yì‹Æ“à—ez
+@ECHO ‚PDSDKƒRƒ}ƒ“ƒhƒvƒƒ“ƒvƒg‚©‚çŽè“®‚ÅƒvƒŠƒRƒ“ƒpƒCƒ‹‚ðs‚Á‚Ä‚­‚¾‚³‚¢
+@ECHO     ƒvƒŠƒRƒ“ƒpƒCƒ‹ƒRƒ}ƒ“ƒhFaspnet_compiler -p %1 -v /Web_Temp %SOLUTION_DIR%\Web_Temp
+@ECHO ‚QDƒvƒŠƒRƒ“ƒpƒCƒ‹Š®—¹ŒãA%1‚ðA%1_BACKUP‚ÖƒŠƒl[ƒ€‚µ‚Ä‚­‚¾‚³‚¢
+@ECHO ‚RD%SOLUTION_DIR%\Web_Temp‚ðA%1‚ÖƒŠƒl[ƒ€‚µ‚Ä‚­‚¾‚³‚¢
 PAUSE
 ) ELSE (
-@ECHO %1 ãƒ•ã‚©ãƒ«ãƒ€ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«_OK >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ãƒ•ã‚©ãƒ«ãƒ€ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«_OK
+@ECHO %1 ƒtƒHƒ‹ƒ_ƒvƒŠƒRƒ“ƒpƒCƒ‹_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ƒtƒHƒ‹ƒ_ƒvƒŠƒRƒ“ƒpƒCƒ‹_OK
 )
 GOTO :EOF
 
-REM //InstallImageãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆå‡¦ç†
+REM //InstallImageƒtƒ@ƒCƒ‹ˆê——ì¬ˆ—
 :PROC_IstImgOUTPUT
-@ECHO %1 ãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ >> %LOG_DIR%\%LOGFILE%
-@ECHO %1 ãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ
+@ECHO %1 ƒtƒ@ƒCƒ‹ˆê——ì¬ >> %LOG_DIR%\%LOGFILE%
+@ECHO %1 ƒtƒ@ƒCƒ‹ˆê——ì¬
 CALL %~dp0\Sub_Module\Install_ImageOUTPUT.vbs %1 >> %LOG_DIR%\%LOGFILE%
 IF ERRORLEVEL 1 (
 SET TOTAL_ERRFLG=1
-@ECHO %1ãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO %1ãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ä½œæˆ_NG
+@ECHO %1ƒtƒ@ƒCƒ‹ˆê——ì¬_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %1ƒtƒ@ƒCƒ‹ˆê——ì¬_NG
 SET ERRFLG=1
 )
 GOTO :EOF
 
-REM ///ãƒ•ã‚¡ã‚¤ãƒ«ãƒªãƒãƒ¼ãƒ åŠã³ã€ãƒ‡ãƒªãƒ¼ãƒˆè‡ªå‹•åŒ–ã«ä¼´ã†å‡¦ç†è¿½åŠ /// -----2009/06/24 è¿½åŠ _Start-----
-REM ///ReNameå‡¦ç†(x64)///
+REM ///ƒtƒ@ƒCƒ‹ƒŠƒl[ƒ€‹y‚ÑAƒfƒŠ[ƒgŽ©“®‰»‚É”º‚¤ˆ—’Ç‰Á/// -----2009/06/24 ’Ç‰Á_Start-----
+REM ///ReNameˆ—(x64)///
 :PROC_ReName_x64
 SET ERR_FLG=0
 
 @ECHO ===================================
-@ECHO ãƒªãƒãƒ¼ãƒ å‡¦ç†ã‚’é–‹å§‹ã—ã¾ã™ã€‚ >> %LOG_DIR%\%LOGFILE%
-@ECHO (x64)ç‰ˆã®ãƒªãƒãƒ¼ãƒ å‡¦ç†ã‚’é–‹å§‹ã—ã¾ã™
+@ECHO ƒŠƒl[ƒ€ˆ—‚ðŠJŽn‚µ‚Ü‚·B >> %LOG_DIR%\%LOGFILE%
+@ECHO (x64)”Å‚ÌƒŠƒl[ƒ€ˆ—‚ðŠJŽn‚µ‚Ü‚·
 @ECHO ===================================
 
 RENAME %LOG_DIR% %APPVERSION%"(x64)"
 IF ERRORLEVEL 1 SET ERR_FLG=1
-REM // LOGFILEã®å¤‰æ•°ã‚»ãƒƒãƒˆ
+REM // LOGFILE‚Ì•Ï”ƒZƒbƒg
 SET LOG_DIR=%LOG_DIR%(x64)
 RENAME %SOURCE_BACKUP% %APPVERSION%"(x64)"
 IF ERRORLEVEL 1 SET ERR_FLG=1
 RENAME %RTB_InstallImage% %APPVERSION%"_RTB(x64)"
 IF ERRORLEVEL 1 SET ERR_FLG=1
-REM -----2015/01/16å‰Šé™¤_START-----
+REM -----2015/01/16íœ_START-----
 REM RENAME %SOLUTION_DIR% SOLUTION"_"%APPVERSION%"(x64)"
 REM IF ERRORLEVEL 1 SET ERR_FLG=1
-REM -----2015/01/16å‰Šé™¤_END-----
-REM ///ã‚¨ãƒ©ãƒ¼ãŒã‚ã£ãŸå ´åˆã€Rename_NGå‡¦ç†ã¸///
+REM -----2015/01/16íœ_END-----
+REM ///ƒGƒ‰[‚ª‚ ‚Á‚½ê‡ARename_NGˆ—‚Ö///
 IF %ERR_FLG%==1 GOTO :Rename_NG
-@ECHO x64ç‰ˆ ãƒªãƒãƒ¼ãƒ _OK >> %LOG_DIR%\%LOGFILE%
-@ECHO x64ç‰ˆ ãƒªãƒãƒ¼ãƒ _OK
+@ECHO x64”Å ƒŠƒl[ƒ€_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO x64”Å ƒŠƒl[ƒ€_OK
 
-REM -----2015/01/16è¿½åŠ _START-----
-REM /// ä¸è¦ãªSOLUTIONãƒ•ã‚©ãƒ«ãƒ€ã®å‰Šé™¤ ///
+REM -----2015/01/16’Ç‰Á_START-----
+REM /// •s—v‚ÈSOLUTIONƒtƒHƒ‹ƒ_‚Ìíœ ///
 IF EXIST %SOLUTION_DIR% (
 	RMDIR /s /q %SOLUTION_DIR%
 	IF ERRORLEVEL 1 CALL :SOL_DEL_ERR
 ) ELSE (
 	CALL :SOL_NOTEXIST
 )
-REM -----2015/01/16è¿½åŠ _END-----
+REM -----2015/01/16’Ç‰Á_END-----
 GOTO :START_SAV
 
 
-REM ///Renameå‡¦ç†(AnyCPU)///
+REM ///Renameˆ—(AnyCPU)///
 :PROC_ReName_AnyCPU
 SET ERR_FLG=0
 
 @ECHO ======================================
-@ECHO ãƒªãƒãƒ¼ãƒ å‡¦ç†ã‚’é–‹å§‹ã—ã¾ã™ã€‚ >> %LOG_DIR%\%LOGFILE%
-@ECHO (AnyCPU)ç‰ˆã®ãƒªãƒãƒ¼ãƒ å‡¦ç†ã‚’é–‹å§‹ã—ã¾ã™ã€‚
+@ECHO ƒŠƒl[ƒ€ˆ—‚ðŠJŽn‚µ‚Ü‚·B >> %LOG_DIR%\%LOGFILE%
+@ECHO (AnyCPU)”Å‚ÌƒŠƒl[ƒ€ˆ—‚ðŠJŽn‚µ‚Ü‚·B
 @ECHO ======================================
 
-REM /// ä¸è¦ãƒ•ã‚¡ã‚¤ãƒ«ã®å‰Šé™¤ ///
+REM /// •s—vƒtƒ@ƒCƒ‹‚Ìíœ ///
 IF EXIST %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dll (
 	DEL   %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dll
 	IF ERRORLEVEL 1 CALL :DEL_ERR
@@ -620,7 +716,7 @@ IF EXIST %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dll (
 	CALL :NOTEXIST
 )
 
-REM /// x86ç‰ˆãƒ•ã‚¡ã‚¤ãƒ«ã®ç½®æ› ///
+REM /// x86”Åƒtƒ@ƒCƒ‹‚Ì’uŠ· ///
 COPY /Y %SOURCE_BACKUP%\Source\Others\bin_Refer"(x86)"\jp.co.fit.vfreport.SvfrClient.dll %SOURCE_BACKUP%\Release\
 IF ERRORLEVEL 1 CALL :COPY_ERR
 REM //2015/10/19 A00855 ADD START
@@ -630,7 +726,7 @@ REM //2015/10/19 A00855 ADD END
 
 RENAME %LOG_DIR% %APPVERSION%"(AnyCPU)"
 IF ERRORLEVEL 1 SET ERR_FLG=1
-REM /// LOGFILEã®å¤‰æ•°ã‚»ãƒƒãƒˆ ///
+REM /// LOGFILE‚Ì•Ï”ƒZƒbƒg ///
 SET LOG_DIR=%LOG_DIR%(AnyCPU)
 RENAME %SOURCE_BACKUP%\Release "Release(AnyCPU)"
 IF ERRORLEVEL 1 SET ERR_FLG=1
@@ -638,115 +734,115 @@ RENAME %SOURCE_BACKUP% %APPVERSION%"(AnyCPU)"
 IF ERRORLEVEL 1 SET ERR_FLG=1
 RENAME %RTB_InstallImage% %APPVERSION%"_RTB(AnyCPU)"
 IF ERRORLEVEL 1 SET ERR_FLG=1
-REM -----2015/01/16å‰Šé™¤_START-----
+REM -----2015/01/16íœ_START-----
 REM RENAME %SOLUTION_DIR% SOLUTION"_"%APPVERSION%"(AnyCPU)"
 REM IF ERRORLEVEL 1 SET ERR_FLG=1
-REM -----2015/01/16å‰Šé™¤_END-----
-REM ///ã‚¨ãƒ©ãƒ¼ãŒã‚ã£ãŸå ´åˆã€Rename_NGå‡¦ç†ã¸///
+REM -----2015/01/16íœ_END-----
+REM ///ƒGƒ‰[‚ª‚ ‚Á‚½ê‡ARename_NGˆ—‚Ö///
 IF %ERR_FLG%==1 GOTO :Rename_NG
 @ECHO ====================
-@ECHO AnyCPUç‰ˆ ãƒªãƒãƒ¼ãƒ _OK >> %LOG_DIR%\%LOGFILE%
-@ECHO AnyCPUç‰ˆ ãƒªãƒãƒ¼ãƒ _OK
+@ECHO AnyCPU”Å ƒŠƒl[ƒ€_OK >> %LOG_DIR%\%LOGFILE%
+@ECHO AnyCPU”Å ƒŠƒl[ƒ€_OK
 @ECHO ====================
 
-REM -----2015/01/16è¿½åŠ _START-----
-REM /// ä¸è¦ãªSOLUTIONãƒ•ã‚©ãƒ«ãƒ€ã®å‰Šé™¤ ///
+REM -----2015/01/16’Ç‰Á_START-----
+REM /// •s—v‚ÈSOLUTIONƒtƒHƒ‹ƒ_‚Ìíœ ///
 IF EXIST %SOLUTION_DIR% (
 	RMDIR /s /q %SOLUTION_DIR%
 	IF ERRORLEVEL 1 CALL :SOL_DEL_ERR
 ) ELSE (
 	CALL :SOL_NOTEXIST
 )
-REM -----2015/01/16è¿½åŠ _END-----
+REM -----2015/01/16’Ç‰Á_END-----
 GOTO :START_SAV
 
 
 
 :START_SAV
-REM -----2015/01/16å‰Šé™¤_START-----
-REM -----2009/11/09è¿½åŠ _START-----
-REM //"Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"é–‹å§‹
-REM @ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã‚’é–‹å§‹ã—ã¾ã™ã€‚
+REM -----2015/01/16íœ_START-----
+REM -----2009/11/09’Ç‰Á_START-----
+REM //"Symantec AntiVirus ƒT[ƒrƒX"ŠJŽn
+REM @ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚ðŠJŽn‚µ‚Ü‚·B
 REM net start "Symantec AntiVirus" >> %LOG_DIR%\%LOGFILE%
 REM IF ERRORLEVEL 1 (
-REM 	@ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã‚’é–‹å§‹å‡ºæ¥ã¾ã›ã‚“ã§ã—ãŸã€‚
-REM 	@ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã‚’æ‰‹å‹•ã§é–‹å§‹å¾Œã€ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦å…ˆã«é€²ã‚“ã§ãã ã•ã„ã€‚
+REM 	@ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚ðŠJŽno—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B
+REM 	@ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚ðŽè“®‚ÅŠJŽnŒãA‰½‚©ƒL[‚ð‰Ÿ‚µ‚Äæ‚Éi‚ñ‚Å‚­‚¾‚³‚¢B
 REM 	PAUSE
 REM ) else (
-REM 	@ECHO "Symantec AntiVirus ã‚µãƒ¼ãƒ“ã‚¹"ã¯æ­£å¸¸ã«é–‹å§‹ã•ã‚Œã¾ã—ãŸã€‚
+REM 	@ECHO "Symantec AntiVirus ƒT[ƒrƒX"‚Í³í‚ÉŠJŽn‚³‚ê‚Ü‚µ‚½B
 REM )
-REM -----2009/11/09è¿½åŠ _END-----
-REM -----2015/01/16å‰Šé™¤_END-----
+REM -----2009/11/09’Ç‰Á_END-----
+REM -----2015/01/16íœ_END-----
 
 GOTO :EOF
 
-REM ///Rename_NGå‡¦ç†///
+REM ///Rename_NGˆ—///
 :Rename_NG
 @ECHO ==================================
-@ECHO ãƒªãƒãƒ¼ãƒ _å‡¦ç†NG >> %LOG_DIR%\%LOGFILE%
-@ECHO ãƒªãƒãƒ¼ãƒ _å‡¦ç†NG
-@ECHO æ‰‹å‹•ã§ãƒªãƒãƒ¼ãƒ ã‚’å®Ÿæ–½ã—ã¦ãã ã•ã„ã€‚
+@ECHO ƒŠƒl[ƒ€_ˆ—NG >> %LOG_DIR%\%LOGFILE%
+@ECHO ƒŠƒl[ƒ€_ˆ—NG
+@ECHO Žè“®‚ÅƒŠƒl[ƒ€‚ðŽÀŽ{‚µ‚Ä‚­‚¾‚³‚¢B
 @ECHO ==================================
 PAUSE
 EXIT
 
-REM ///FILEãŒå­˜åœ¨ã—ãªã„å ´åˆã®ã‚¨ãƒ©ãƒ¼å‡¦ç†///
+REM ///FILE‚ª‘¶Ý‚µ‚È‚¢ê‡‚ÌƒGƒ‰[ˆ—///
 :NOTEXIST
 @ECHO ======================================================================
-@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dllãŒå­˜åœ¨ã—ã¾ã›ã‚“ >> %LOG_DIR%\%LOGFILE%
-@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dllãŒå­˜åœ¨ã—ã¾ã›ã‚“
-@ECHO Microsoft.Web.UI.WebControls.dllå‰Šé™¤å‡¦ç†ã‚’ã‚¹ãƒ«ãƒ¼ã—ã¾ã™ >> %LOG_DIR%\%LOGFILE%
-@ECHO Microsoft.Web.UI.WebControls.dllå‰Šé™¤å‡¦ç†ã‚’ã‚¹ãƒ«ãƒ¼ã—ã¾ã™
+@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dll‚ª‘¶Ý‚µ‚Ü‚¹‚ñ >> %LOG_DIR%\%LOGFILE%
+@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dll‚ª‘¶Ý‚µ‚Ü‚¹‚ñ
+@ECHO Microsoft.Web.UI.WebControls.dllíœˆ—‚ðƒXƒ‹[‚µ‚Ü‚· >> %LOG_DIR%\%LOGFILE%
+@ECHO Microsoft.Web.UI.WebControls.dllíœˆ—‚ðƒXƒ‹[‚µ‚Ü‚·
 @ECHO ======================================================================
 PAUSE
 GOTO :EOF
 
-REM ///DEL_ERRå‡¦ç†///
+REM ///DEL_ERRˆ—///
 :DEL_ERR
-@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dllå‰Šé™¤_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dllå‰Šé™¤_NG
-@ECHO æ‰‹å‹•ã§Microsoft.Web.UI.WebControls.dllå‰Šé™¤å¾ŒEnterã‚’æŠ¼ä¸‹ã—ã¦ã€æ¬¡ã®å‡¦ç†ã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
+@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dllíœ_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %SOURCE_BACKUP%\Release\Microsoft.Web.UI.WebControls.dllíœ_NG
+@ECHO Žè“®‚ÅMicrosoft.Web.UI.WebControls.dllíœŒãEnter‚ð‰Ÿ‰º‚µ‚ÄAŽŸ‚Ìˆ—‚ðŽÀs‚µ‚Ä‚­‚¾‚³‚¢B
 PAUSE
 GOTO :EOF
 
-REM ///COPY_ERRå‡¦ç†///
+REM ///COPY_ERRˆ—///
 :COPY_ERR
-@ECHO jp.co.fit.vfreport.SvfrClient.dllç½®æ›_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO jp.co.fit.vfreport.SvfrClient.dllç½®æ›_NG
-@ECHO æ‰‹å‹•ã§jp.co.fit.vfreport.SvfrClient.dllã‚’"(AnyCPU)"ç‰ˆã«ç½®æ›å¾ŒEnterã‚’æŠ¼ä¸‹ã—ã¦ã€æ¬¡ã®å‡¦ç†ã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„
+@ECHO jp.co.fit.vfreport.SvfrClient.dll’uŠ·_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO jp.co.fit.vfreport.SvfrClient.dll’uŠ·_NG
+@ECHO Žè“®‚Åjp.co.fit.vfreport.SvfrClient.dll‚ð"(AnyCPU)"”Å‚É’uŠ·ŒãEnter‚ð‰Ÿ‰º‚µ‚ÄAŽŸ‚Ìˆ—‚ðŽÀs‚µ‚Ä‚­‚¾‚³‚¢
 PAUSE
 GOTO :EOF
 
 REM //2015/10/19 A00855 ADD START
-REM ///COPY_ERR2å‡¦ç†///
+REM ///COPY_ERR2ˆ—///
 :COPY_ERR2
-@ECHO CC01.dllç½®æ›_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO CC01.dllç½®æ›_NG
-@ECHO æ‰‹å‹•ã§CC01.dllã‚’"(AnyCPU)"ç‰ˆã«ç½®æ›å¾ŒEnterã‚’æŠ¼ä¸‹ã—ã¦ã€æ¬¡ã®å‡¦ç†ã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„
+@ECHO CC01.dll’uŠ·_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO CC01.dll’uŠ·_NG
+@ECHO Žè“®‚ÅCC01.dll‚ð"(AnyCPU)"”Å‚É’uŠ·ŒãEnter‚ð‰Ÿ‰º‚µ‚ÄAŽŸ‚Ìˆ—‚ðŽÀs‚µ‚Ä‚­‚¾‚³‚¢
 PAUSE
 GOTO :EOF
 REM //2015/10/19 A00855 ADD END
-REM ///ãƒ•ã‚¡ã‚¤ãƒ«ãƒªãƒãƒ¼ãƒ åŠã³ã€ãƒ‡ãƒªãƒ¼ãƒˆè‡ªå‹•åŒ–ã«ä¼´ã†å‡¦ç†è¿½åŠ /// -----2009/06/24 è¿½åŠ _End-------
+REM ///ƒtƒ@ƒCƒ‹ƒŠƒl[ƒ€‹y‚ÑAƒfƒŠ[ƒgŽ©“®‰»‚É”º‚¤ˆ—’Ç‰Á/// -----2009/06/24 ’Ç‰Á_End-------
 
-REM -----2015/01/16è¿½åŠ _START-----
-REM ///SOLUTIONãƒ•ã‚©ãƒ«ãƒ€ãŒå­˜åœ¨ã—ãªã„å ´åˆã®ã‚¨ãƒ©ãƒ¼å‡¦ç†///
+REM -----2015/01/16’Ç‰Á_START-----
+REM ///SOLUTIONƒtƒHƒ‹ƒ_‚ª‘¶Ý‚µ‚È‚¢ê‡‚ÌƒGƒ‰[ˆ—///
 :SOL_NOTEXIST
 @ECHO ======================================================================
-@ECHO %SOLUTION_DIR%ãƒ•ã‚©ãƒ«ãƒ€ãŒå­˜åœ¨ã—ã¾ã›ã‚“ >> %LOG_DIR%\%LOGFILE%
-@ECHO %SOLUTION_DIR%ãƒ•ã‚©ãƒ«ãƒ€ãŒå­˜åœ¨ã—ã¾ã›ã‚“
-@ECHO %SOLUTION_DIR%ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤å‡¦ç†ã‚’ã‚¹ã‚­ãƒƒãƒ—ã—ã¾ã™ >> %LOG_DIR%\%LOGFILE%
-@ECHO %SOLUTION_DIR%ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤å‡¦ç†ã‚’ã‚¹ã‚­ãƒƒãƒ—ã—ã¾ã™
+@ECHO %SOLUTION_DIR%ƒtƒHƒ‹ƒ_‚ª‘¶Ý‚µ‚Ü‚¹‚ñ >> %LOG_DIR%\%LOGFILE%
+@ECHO %SOLUTION_DIR%ƒtƒHƒ‹ƒ_‚ª‘¶Ý‚µ‚Ü‚¹‚ñ
+@ECHO %SOLUTION_DIR%ƒtƒHƒ‹ƒ_íœˆ—‚ðƒXƒLƒbƒv‚µ‚Ü‚· >> %LOG_DIR%\%LOGFILE%
+@ECHO %SOLUTION_DIR%ƒtƒHƒ‹ƒ_íœˆ—‚ðƒXƒLƒbƒv‚µ‚Ü‚·
 @ECHO ======================================================================
 PAUSE
 GOTO :EOF
 
-REM ///SOL_DEL_ERRå‡¦ç†///
+REM ///SOL_DEL_ERRˆ—///
 :SOL_DEL_ERR
-@ECHO %SOLUTION_DIR%ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_NG >> %LOG_DIR%\%LOGFILE%
-@ECHO %SOLUTION_DIR%ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤_NG
-@ECHO æ‰‹å‹•ã§%SOLUTION_DIR%ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤å¾ŒEnterã‚’æŠ¼ä¸‹ã—ã¦ã€æ¬¡ã®å‡¦ç†ã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
+@ECHO %SOLUTION_DIR%ƒtƒHƒ‹ƒ_íœ_NG >> %LOG_DIR%\%LOGFILE%
+@ECHO %SOLUTION_DIR%ƒtƒHƒ‹ƒ_íœ_NG
+@ECHO Žè“®‚Å%SOLUTION_DIR%ƒtƒHƒ‹ƒ_íœŒãEnter‚ð‰Ÿ‰º‚µ‚ÄAŽŸ‚Ìˆ—‚ðŽÀs‚µ‚Ä‚­‚¾‚³‚¢B
 PAUSE
 GOTO :EOF
-REM -----2015/01/16è¿½åŠ _END-----
+REM -----2015/01/16’Ç‰Á_END-----
 
 :END

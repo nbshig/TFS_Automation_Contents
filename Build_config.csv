@@ -1,8 +1,6 @@
 リポジトリ,パス
-マージ,C:\work\powerShellテスト\マージ\
-000,C:\work\powerShellテスト\000\
-100,C:\work\powerShellテスト\100\
-300,C:\work\powerShellテスト\300\
-A00922,Z:\work\powerShellテスト\A00922\
-BBB,
-CCC,
+SOLUTION,C:\SOLUTION\
+000,C:\TFSAutoBuild\agent\_work\3\s\000本番用チームプロジェクト\
+A00922,Z:\00_案件\10_業務\20_案件管理\00_案件資料\A00922_脱退一時金相当額の移換対象者の拡大(DC法改正)対応\30_ID-UT\33.CD\修正後\
+A00921,Z:\00_案件\10_業務\20_案件管理\00_案件資料\A00921_(法改正)リスク分担型企業年金制度の対応\30_ID-UT\33.CD\修正後\
+Images,C:\SVF\Images\

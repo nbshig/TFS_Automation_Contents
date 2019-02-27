@@ -1,19 +1,61 @@
-ï»¿Get-ExecutionPolicy
-#Set-ExecutionPolicy RemoteSigned
 
-$arr_strè¡Œ = Get-Content C:\work\powerShellãƒ†ã‚¹ãƒˆ\æ­£è¦è¡¨ç¾æ¤œè¨¼.txt -Encoding string | Select-Object -last 20
 
-foreach ($i in $arr_strè¡Œ) {
-    Write-Host $i
+#•Ï”’è‹`
+$strBuildLogDir = "C:\BuildLog\"
 
-    #if ($i -match "^(?=.*\d)(?!.*20).*$") {
-        #1è¡Œã®ä¸­ã«æ•°å€¤ãŒã‚ã‚‹ã€ã‹ã¤ã€20ä»¥å¤–ã§ã‚ã‚‹æ•°å€¤ã§ã‚ã‚‹å ´åˆ
-    if ($i -match ("0 å¤±æ•—|ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«å‡¦ç†çµ‚äº†|ãƒ“ãƒ«ãƒ‰ã‚¹ã‚¯ãƒªãƒ—ãƒˆå‡¦ç†æ­£å¸¸çµ‚äº†")) {
-        Write-Host "æ­£å¸¸çµ‚äº†!"
-        exit 0
+#ƒnƒbƒVƒ…•Ï”‚Ì’è‹`
+$hash = @{}
+
+
+#ˆø”‚ğ•¶š—ñ‚É•ÏŠ·
+
+ #ƒƒOƒtƒHƒ‹ƒ_–¼
+$strBuildLogFolderName = $Args[0] -as [string]
+#X64 or Debug
+$strBuildLogVer = $Args[1] -as [string]
+$strBuildLogVer = "(${strBuildLogVer})"
+
+
+# ˆ—‘ÎÛ‚ÌƒtƒHƒ‹ƒ_
+$targetFolder = "${strBuildLogDir}${strBuildLogFolderName}${strBuildLogVer}"
+ 
+# $targetFolder“à‚Ìƒtƒ@ƒCƒ‹EƒtƒHƒ‹ƒ_‚ÌƒŠƒXƒg‚ğæ“¾‚·‚éB
+$itemList = Get-ChildItem $targetFolder;
+
+$itemList | ForEach-Object { $hash.add($_.Name,$_.value) }
+
+foreach($item in $itemList) {
+    if($item.PSIsContainer) {
+        # ƒtƒHƒ‹ƒ_‚Ìê‡‚ÍA‘z’èŠOBˆ—‚È‚µ
+    } else {
+        # ƒtƒ@ƒCƒ‹‚Ìê‡‚Ìˆ—
+        Write-Host ($item.Name + "‚ğƒ`ƒFƒbƒNŠJn!")
+        #ÅŒã‚©‚ç20s‚ğæ“¾
+        $arr_strs = Get-Content ( join-path ${targetFolder} $item.Name.tostring() ) -Encoding string | Select-Object -last 20
+
+        foreach ($i in $arr_strs) {
+            #Write-Host $i
+
+            #if ($i -match "^(?=.*\d)(?!.*20).*$") {
+            #1s‚Ì’†‚É”’l‚ª‚ ‚éA‚©‚ÂA20ˆÈŠO‚Å‚ ‚é”’l‚Å‚ ‚éê‡
+            if ($i -match ("0 ¸”s|ƒvƒŠƒRƒ“ƒpƒCƒ‹ˆ—I—¹|ƒrƒ‹ƒhƒXƒNƒŠƒvƒgˆ—³íI—¹")) {
+                Write-Host ($item.Name + "‚ÍA³íI—¹!")
+                $hash[$item.Name] = $true
+                break
+            }
+        }
+            if ( $hash[$item.Name] -ne $true ) {
+                #ƒƒOƒtƒ@ƒCƒ‹ã‚É³íI—¹ƒƒO‚ğ”­Œ©‚Å‚«‚È‚©‚Á‚½
+                $hash[$item.Name.tostring()] = $false
+            }
     }
+} 
+
+if ( $hash.ContainsValue($false) ) {
+    #FALSE‚ª‘¶İ‚·‚éê‡A³íI—¹ƒƒO‚ğ”­Œ©o—ˆ‚È‚©‚Á‚½‚Æ‚¢‚¤–‚ÅAexit 1‚ğ•Ô‚·
+    Write-Host "ˆÙíI—¹‚ğ¦‚·ƒƒOƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚Ü‚·BŠm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+    exit 1
 }
 
-#æœ€çµ‚è¡Œã¾ã§åˆ°é”ã—ãŸå ´åˆã€æ­£å¸¸çµ‚äº†ãƒ­ã‚°ã‚’ç™ºè¦‹å‡ºæ¥ãªã‹ã£ãŸã¨ã„ã†äº‹ã§ã€exit 1ã‚’è¿”ã™
-Write-Host "æœ€çµ‚è¡Œã¾ã§åˆ°é”ï¼"
-exit 1
+Write-Host "ÅIs‚Ü‚Å“’BI"
+exit 0

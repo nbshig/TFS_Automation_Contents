@@ -1,14 +1,33 @@
 #Script-Name：Prepare_LocalBuild.ps1
 #
-#引数1：バージョン番号（yymmdd_30xnnn）
+#
 #
 #概要：ビルド実行（x64）後に、ローカル用ライブラリをビルドする為の準備を行う
 #
 
 
-#引数を文字列に変換
-#バージョン番号
-$strVerNo = $Args[0] -as [string]
+#変数定義
+$strBuildVerNo_Value = ""
+
+#ハッシュ変数の定義
+$hash = @{}
+
+
+#-- 共通モジュールロード
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+#configファイルの読み込み
+$hash = Import_CSV
+
+#キーと、対する値の確認
+if ($hash["BuildVerNo"] -ne $null) {
+    $strBuildVerNo_Value = $hash["BuildVerNo"].ToString()
+} else {
+    #キーと対になるべき値が存在しないため、異常終了とする。
+    write-host("エラー: キーと対になる値がconfigファイル上に定義されていません。キー→ BuildVerNo")
+    Exit 2
+}
+
+
 
 #
 #SOLUTIONフォルダ作成
@@ -18,7 +37,7 @@ $strVerNo = $Args[0] -as [string]
 #貼り付けたフォルダを「SOLUTION」(半角大文字）にリネームする。
 
 #コピー元フォルダ
-$strOldFolder = "C:\BuildSource\${strVerNo}(x64)\Source"
+$strOldFolder = "C:\BuildSource\${strBuildVerNo_Value}(x64)\Source"
 #コピー先フォルダ
 $strNewFolder = "C:\SOLUTION"
 

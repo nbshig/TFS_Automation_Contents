@@ -2,51 +2,43 @@
 #
 #引数1：リポジトリ名
 #
-#概要：引数で渡されたリポジトリ名より、対象リポジトリのリソースをマージフォルダへコピーする
+#概要：引数で渡されたリポジトリ名より、対象リポジトリのパスを選定して、該当リソースをマージフォルダへコピーする
 #
 
 
 #変数定義
-$strConfigFile = "C:\TFSAutoBuild\agent\AutoBuild_A00921\Build_config.csv"
 $strAllResorce = "*"
 $tf = '$tf'
 $SVF_Image = "SVF\Images\"
 
 #引数を文字列に変換
 $strRepo = $Args[0] -as [string]
-#Write-Host $strRepo
-############################
-#configファイルの読み込み
-############################
 
 #ハッシュ変数の定義
 $hash = @{}
 
 
-#ファイルの存在を確認する
-if((Test-Path $strConfigFile) -eq $false){
-    write-host("エラー: configファイルが見つかりません: " + $strConfigFile)
-    exit 2
-}    
-#Read-Host "続けるにはENTERキーを押して下さい" 
-#configファイルを読み込んでハッシュに変換する
-Import-Csv $strConfigFile -Encoding Default | ForEach-Object { $hash.add($_.Key,$_.Value) }
+#-- 共通モジュールロード
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+#configファイルの読み込み
+$hash = Import_CSV
 
-#引数で渡されたリポジトリパスの準備
+
+#引数で渡されたキーと、対する値の確認
 if ($hash[$strRepo] -ne $null) {
     $strリポジトリパス = $hash[$strRepo].ToString()
 } else {
-    #リポジトリ名と対になるべきリポジトリパスが存在しないため、異常終了とする。
-    write-host("エラー: 引数で渡したリポジトリ名と対になるリポジトリパスがconfigファイル上に定義されていません。リポジトリ名→ " + $strRepo)
+    #引数のキーと対になるべき値が存在しないため、異常終了とする。
+    write-host("エラー: 引数で渡したキーと対になる値がconfigファイル上に定義されていません。キー→ " + $strRepo)
     Exit 2
 }
 
-#マージフォルダパスの準備
+##引数で渡されたキーと、対する値の確認（マージフォルダパスの準備）
 if ($hash["SOLUTION"] -ne $null) {
     $strマージパス = $hash["SOLUTION"].ToString()
 } else {
-    #リポジトリ名と対になるべきリポジトリパスが存在しないため、異常終了とする。
-    write-host("エラー: リポジトリ名と対になるリポジトリパスがconfigファイル上に定義されていません。リポジトリ名→ SOLUTION")
+    #引数のキーと対になるべき値が存在しないため、異常終了とする。
+    write-host("エラー: 引数で渡したキーと対になる値がconfigファイル上に定義されていません。キー→ SOLUTION")
     Exit 2
 }
 

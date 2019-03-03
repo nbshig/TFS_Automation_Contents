@@ -1,35 +1,57 @@
 #Script-Name：LogCheck.ps1
 #
-#引数1：バージョン番号（yymmdd_30xnnn）
-#引数2：ビルドバージョン（x64 or Debug）
+#引数1：ソリューション構成No(x64 or Debug) 
 #
 #概要：ビルド実行後のログファイルについてチェックする
 #
 
 #変数定義
-$strBuildLogDir = "C:\BuildLog\"
+$strBuildVerNo_Value = ""
+$strBuildLogPath_Value = ""
 
 #ハッシュ変数の定義
 $hash = @{}
+$hash_LogList = @{}
+
+#-- 共通モジュールロード
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+#configファイルの読み込み
+$hash = Import_CSV
+
+#キーと、対する値の確認
+if ($hash["BuildVerNo"] -ne $null) {
+    $strBuildVerNo_Value = $hash["BuildVerNo"].ToString()
+} else {
+    #キーと対になるべき値が存在しないため、異常終了とする。
+    write-host("エラー: キーと対になる値がconfigファイル上に定義されていません。キー→ BuildVerNo")
+    Exit 2
+}
+
+if ($hash["BuildLogPath"] -ne $null) {
+    $strBuildLogPath_Value = $hash["BuildLogPath"].ToString()
+} else {
+    #引数のキーと対になるべき値が存在しないため、異常終了とする。
+    write-host("エラー: 引数で渡したキーと対になる値がconfigファイル上に定義されていません。キー→ BuildLogPath")
+    Exit 2
+}
+
 
 
 #引数を文字列に変換
 
- #ログフォルダ名
-$strBuildLogFolderName = $Args[0] -as [string]
 #X64 or Debug
-$strBuildLogVer = $Args[1] -as [string]
-if ($strBuildLogVer = "x64") {
+$strSolConfigNo = $Args[0] -as [string]
+if ($strSolConfigNo = "x64") {
     #X64のとき
-    $strBuildLogVer = "(${strBuildLogVer})"
+    $strSolConfigNo = "(${strSolConfigNo})"
 } else {
     #Debugのとき（もしくは何も入っていないか、何か他の文字列が入っているとき）
-    $strBuildLogVer = ""
+    $strSolConfigNo = ""
 }
 
 
 # 処理対象のフォルダ
-$targetFolder = "${strBuildLogDir}${strBuildLogFolderName}${strBuildLogVer}"
+$targetFolder = "${strBuildLogPath_Value}${strBuildVerNo_Value}${strSolConfigNo}"
 
 if ((Test-Path $targetFolder) -ne $true) {
     write-host("エラー: ログ確認対象フォルダが見つかりません: " + $targetFolder)
@@ -39,7 +61,7 @@ if ((Test-Path $targetFolder) -ne $true) {
 # $targetFolder内のファイル・フォルダのリストを取得する。
 $itemList = Get-ChildItem $targetFolder;
 
-$itemList | ForEach-Object { $hash.add($_.Name,$_.value) }
+$itemList | ForEach-Object { $hash_LogList.add($_.Name,$_.value) }
 
 foreach($item in $itemList) {
     if($item.PSIsContainer) {
@@ -55,18 +77,18 @@ foreach($item in $itemList) {
             #if ($i -match "^(?=.*\d)(?!.*20).*$") {　←正規表現のお勉強（1行の中に数値がある、かつ、20以外の数値であるケース）
             if ($i -match ("0 失敗|プリコンパイル処理終了|ビルドスクリプト処理正常終了")) {
                 Write-Host ($item.Name + "は、正常終了")
-                $hash[$item.Name] = $true
+                $hash_LogList[$item.Name] = $true
                 break
             }
         }
-            if ( $hash[$item.Name] -ne $true ) {
+            if ( $hash_LogList[$item.Name] -ne $true ) {
                 #ログファイル上に正常終了ログを発見できなかった
-                $hash[$item.Name.tostring()] = $false
+                $hash_LogList[$item.Name.tostring()] = $false
             }
     }
 } 
 
-if ( $hash.ContainsValue($false) ) {
+if ( $hash_LogList.ContainsValue($false) ) {
     #FALSEが存在する場合、正常終了ログを発見出来なかったという事で、exit 3を返す
     Write-Host "異常終了を示すログファイルが存在します。確認してください。"
     exit 3

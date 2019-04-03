@@ -15,7 +15,7 @@ $hash = @{}
 
 
 #-- 共通モジュールロード
-. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Include.ps1"
 #configファイルの読み込み
 $hash = Import_CSV
 
@@ -79,7 +79,26 @@ Write-Host "InstallImageの圧縮 終了"
 
 Write-Host "InstallImageの移動 開始"
 
-#(1) バッチ管理サーバー
+#(1) ビルド端末の所定のフォルダ
+
+#InstallImage(x64)について、C:\InstallImageへコピーする
+try {
+    Copy-Item .\"${strBuildVerNo_Value}_RTB(x64).zip" "C:\InstallImage\" -ErrorAction stop
+} catch {
+    Write-Host "C:\InstallImageへのコピー　失敗!(InstallImage RTB(x64))"
+    exit 9
+}
+
+#InstallImage(Debug)について、C:\InstallImageへコピーする
+try {
+    Copy-Item .\"${strBuildVerNo_Value}_RTB(Debug).zip" "C:\InstallImage\" -ErrorAction stop
+} catch {
+    Write-Host "C:\InstallImageへのコピー　失敗!(InstallImage RTB(Debug))"
+    exit 9
+}
+
+
+#(2) バッチ管理サーバー
 $strコピー先Dir = "\\H031S3274\Release"
 
 #net use接続
@@ -98,7 +117,7 @@ net use z: /delete /y
 $strコピー先Dir = $null
 
 
-#(2) Sharedocs
+#(3) Sharedocs
 $strコピー先Dir = "\\128.250.131.145\ShareDocs\30_運用\50_リソース管理\11_IT\01_ライブラリ\02_InstallImage"
 
 #net use接続
@@ -172,6 +191,18 @@ Write-Host "BuildSourceの圧縮 終了"
 #
 Write-Host "BuildSourceの移動 開始"
 
+#(1) ビルド端末の所定のフォルダ
+
+#BuildSource(x64)(Debug)について、C:\BuildSourceへコピーする
+try {
+    Copy-Item .\"*.zip" "C:\BuildSource\" -ErrorAction stop
+} catch {
+    Write-Host "C:\BuildSourceへのコピー　失敗!(BuildSource)"
+    exit 9
+}
+
+
+#(2) Sharedocs
 $strコピー先Dir = "\\128.250.131.145\ShareDocs\30_運用\50_リソース管理\11_IT\01_ライブラリ\01_Source"
 #net use接続
 net use Z: $strコピー先Dir
@@ -196,6 +227,7 @@ $strComp元_DebugDir = $null
 $strコピー先Dir = $null
 
 Write-Host "BuildSourceの移動 終了"
+
 
 
 #

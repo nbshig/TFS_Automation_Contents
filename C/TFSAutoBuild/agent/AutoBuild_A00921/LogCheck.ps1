@@ -1,6 +1,6 @@
 #Script-Name：LogCheck.ps1
 #
-#引数1：ソリューション構成No(x64 or Debug) 
+#引数1：ソリューション構成No(1:x64 or 4:Debug) 
 #
 #概要：ビルド実行後のログファイルについてチェックする
 #
@@ -14,7 +14,7 @@ $hash = @{}
 $hash_LogList = @{}
 
 #-- 共通モジュールロード
-. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Include.ps1"
 #configファイルの読み込み
 $hash = Import_CSV
 
@@ -41,9 +41,9 @@ if ($hash["BuildLogPath"] -ne $null) {
 
 #X64 or Debug
 $strSolConfigNo = $Args[0] -as [string]
-if ($strSolConfigNo = "x64") {
+if ($strSolConfigNo -eq "1") {
     #X64のとき
-    $strSolConfigNo = "(${strSolConfigNo})"
+    $strSolConfigNo = "(x64)"
 } else {
     #Debugのとき（もしくは何も入っていないか、何か他の文字列が入っているとき）
     $strSolConfigNo = ""

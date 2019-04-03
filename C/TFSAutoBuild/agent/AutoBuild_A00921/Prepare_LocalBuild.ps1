@@ -14,7 +14,7 @@ $hash = @{}
 
 
 #-- 共通モジュールロード
-. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Include.ps1"
 #configファイルの読み込み
 $hash = Import_CSV
 

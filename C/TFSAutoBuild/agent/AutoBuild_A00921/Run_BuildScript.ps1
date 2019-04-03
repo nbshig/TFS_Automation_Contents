@@ -6,6 +6,8 @@
 #　　　(パラメータの共通化を図る為にBuild_config.csvを読み込むべくPowerShellからの呼び出しとする)
 #
 
+Write-Host "Run_BuildScript.ps1 開始"
+
 #変数定義
 $strBuildVerNo_Value = ""
 $strBuildScriptPath_Value = ""
@@ -18,7 +20,7 @@ $hash = @{}
 
 
 #-- 共通モジュールロード
-. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Include.ps1"
 #configファイルの読み込み
 $hash = Import_CSV
 
@@ -57,9 +59,3 @@ if ( Test-Path "${strBuildScriptPath_Value}BuildScript_開発_ビルド自動化用.bat" 
 
 Write-Host "Run_BuildScript.ps1が終了しました"
 exit 0
-
-
-
-
-
-

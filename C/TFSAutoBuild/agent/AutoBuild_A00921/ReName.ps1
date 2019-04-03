@@ -5,6 +5,7 @@
 #概要：引数1で渡されたバージョン番号のフォルダに(Debug)を付加してリネームする
 #
 
+Write-Host "ReName.ps1 開始"
 
 #変数定義
 $strBuildVerNo_Value = ""
@@ -14,7 +15,7 @@ $hash = @{}
 
 
 #-- 共通モジュールロード
-. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Included.ps1"
+. "C:\TFSAutoBuild\agent\AutoBuild_A00921\Include.ps1"
 #configファイルの読み込み
 $hash = Import_CSV
 
@@ -48,11 +49,12 @@ Write-Host "リネーム開始"
 try {
     Rename-Item $strReName1 -NewName "${strBuildVerNo_Value}(Debug)" -ErrorAction Stop
     Rename-Item $strReName2 -NewName "${strBuildVerNo_Value}(Debug)" -ErrorAction Stop
-    Rename-Item $strReName3 -NewName "${strBuildVerNo_Value}(Debug)" -ErrorAction Stop
+    Rename-Item $strReName3 -NewName "${strBuildVerNo_Value}_RTB(Debug)" -ErrorAction Stop
 } catch  {
     Write-Host "リネーム失敗!"
     exit 9
 }
 
 Write-Host "リネーム成功！"
+Write-Host "ReName.ps1 終了"
 exit 0
